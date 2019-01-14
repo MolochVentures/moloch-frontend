@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Navbar, Nav, NavItem, Glyphicon } from 'react-bootstrap';
 import './App.css';
 import Navigator from './Navigator';
 import Home from './Home';

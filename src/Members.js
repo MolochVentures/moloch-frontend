@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Glyphicon, Image } from 'react-bootstrap';
 import './App.css';
 
 class Members extends Component {
@@ -15,11 +16,55 @@ class Members extends Component {
     render() {
       return (
         <div>
-            <p>Members</p>
-            <div onClick={this.loadMemberDetail}>
-                <h3>KHJ</h3>
-                <p>43 Shares</p>
-                <h3>SS501</h3>
+            <a href="#"><Glyphicon glyph="times" /></a>
+            <p>57 Members</p>
+            <h3>Ranking</h3>
+            <div className="MembersContainer">
+                <div className="Member">
+                    <Image className="MemberImage" src={require('./assets/UserImg.png')} onClick={this.loadMemberDetail}></Image>
+                    <h5>Malcom Jans</h5>
+                    <p>78</p>
+                    <p>Shares</p>
+                </div>
+            </div>
+            <h5>Elders</h5>
+            <div className="MembersContainer">
+                <div className="Member">
+                    <Image className="MemberImage" src={require('./assets/UserImg.png')} onClick={this.loadMemberDetail}></Image>
+                    <h5>Malcom Jans</h5>
+                    <p>78</p>
+                    <p>Shares</p>
+                </div>
+                <div className="Member">
+                    <Image className="MemberImage" src={require('./assets/UserImg.png')} onClick={this.loadMemberDetail}></Image>
+                    <h5>Malcom Jans</h5>
+                    <p>78</p>
+                    <p>Shares</p>
+                </div>
+                <div className="Member">
+                    <Image className="MemberImage" src={require('./assets/UserImg.png')} onClick={this.loadMemberDetail}></Image>
+                    <h5>Malcom Jans</h5>
+                    <p>78</p>
+                    <p>Shares</p>
+                </div>
+                <div className="Member">
+                    <Image className="MemberImage" src={require('./assets/UserImg.png')} onClick={this.loadMemberDetail}></Image>
+                    <h5>Malcom Jans</h5>
+                    <p>78</p>
+                    <p>Shares</p>
+                </div>
+                <div className="Member">
+                    <Image className="MemberImage" src={require('./assets/UserImg.png')} onClick={this.loadMemberDetail}></Image>
+                    <h5>Malcom Jans</h5>
+                    <p>78</p>
+                    <p>Shares</p>
+                </div>
+                <div className="Member">
+                    <Image className="MemberImage" src={require('./assets/UserImg.png')} onClick={this.loadMemberDetail}></Image>
+                    <h5>Malcom Jans</h5>
+                    <p>78</p>
+                    <p>Shares</p>
+                </div>
             </div>
         </div>
       );
