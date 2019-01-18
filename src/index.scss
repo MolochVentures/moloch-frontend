@@ -1,0 +1,318 @@
+body {
+  color: white;
+  font-weight: bold;
+  font-family: "GT Haptik", sans-serif;
+}
+
+.amount {
+  font-family: "Cartograph Mono CF", sans-serif;
+}
+
+.subtext {
+  opacity: 0.5;
+}
+
+.title {
+  font-size: 30px;
+  line-height: 15px;
+}
+
+.button {
+  padding: 20px 45px !important;
+  &.grey {
+    background: rgba(50, 50, 50, 0.9) !important;
+  }
+}
+
+//.blurred:before {
+//  content: '';
+//  position: absolute;
+//  top: 0;
+//  left: 0;
+//  right: 0;
+//  bottom: 0;
+//  height: 100%;
+//  width: 100%;
+//  background: url("assets/moloch_owl.jpg") 0 / cover fixed;
+//  filter: blur(50px);
+//  opacity: 0.3;
+//}
+
+.pill {
+  border-radius: 20px !important;
+  padding: 8px 20px !important;
+  background: hsla(0, 0, 50%, 0.3) !important;
+}
+
+.uncolored {
+  color: inherit !important;
+}
+
+.blurred {
+  background: rgba(100, 100, 100, 0.9) !important;
+}
+
+.transparent {
+  background: transparent !important;
+}
+
+.blurred.box {
+  background: rgba(100, 100, 100, 0.4) !important;
+  padding: 30px;
+}
+
+#background {
+  .blurred_image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: -2;
+    background: url("assets/moloch_owl.jpg") 0 / cover fixed;
+    filter: blur(12px);
+  }
+
+  .dark_overlay {
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    z-index: -1;
+    background: rgba(0, 0, 0, 0.85);
+  }
+}
+
+#header {
+  height: 80px;
+  padding: 20px 30px;
+  .menu {
+    font-size: 20px;
+  }
+  .logo {
+    font-size: 20px;
+    letter-spacing: 2px;
+    text-decoration: none;
+    a {
+      color: inherit;
+    }
+  }
+  .dropdown {
+    .label {
+      font-size: 15px;
+      margin-right: 0;
+    }
+    .menu {
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 15px;
+      font-weight: normal;
+      input {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        margin-bottom: 5px;
+      }
+      .button {
+        padding: 10px 20px !important;
+      }
+      .item {
+        padding: 20px !important;
+        color: inherit;
+      }
+    }
+  }
+}
+
+#wrapper {
+  margin: 30px 50px;
+}
+
+#homepage {
+  .guild_value {
+    .amount {
+      font-size: 50px;
+      line-height: 30px;
+    }
+  }
+  .browse_buttons, .submit_button {
+    .link:not(:first-of-type) {
+      margin-left: 10px !important;
+    }
+    margin-top: 40px;
+  }
+  .graph {
+    width: 100%;
+    height: 60vh;
+  }
+  .graph_values {
+    padding-left: 20px;
+    padding-right: 20px;
+    .amount {
+      font-size: 30px;
+      line-height: 15px;
+    }
+  }
+  .text_link {
+    color: #fff !important;
+  }
+}
+
+#member_list {
+  .name {
+    margin-top: 10px;
+    margin-bottom: 0;
+  }
+  .divider {
+    margin: 0;
+  }
+  .members_row {
+    margin-top: 20px;
+    .member {
+      margin-bottom: 35px;
+    }
+  }
+}
+
+#member_detail {
+  .details {
+    margin-top: 20px;
+  }
+  .blurred.box {
+    padding: 30px 60px;
+  }
+  .amount {
+    font-size: 25px;
+    line-height: 15px;
+  }
+  .avatar {
+    margin: 50px;
+  }
+  .user {
+    .segment {
+      height: 100%;
+    }
+  }
+  .user, .proposals{
+    height: 500px !important;
+  }
+  .proposals {
+    .segment {
+      height: 100%;
+      overflow-y: scroll;
+    }
+    .header {
+      margin-bottom: 5px;
+    }
+    p {
+      font-size: 1rem;
+      color: inherit;
+    }
+    .dot {
+      margin-right: 10px;
+    }
+    .divider {
+      margin: 10px;
+    }
+  }
+}
+
+#proposal_list {
+  .name {
+    font-size: 15px;
+  }
+  .description {
+    padding-top: 10px;
+    padding-bottom: 20px;
+  }
+  .value_shares {
+    padding-left: 20px;
+    padding-right: 20px;
+    .amount {
+      font-size: 25px;
+      line-height: 15px;
+    }
+
+    margin-bottom: 30px;
+  }
+  .deadlines {
+    margin: 30px auto;
+    .pill {
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+    .voting {}
+    .grace {
+      opacity: 0.5;
+    }
+  }
+  .progress .bar {
+    border-radius: 20px;
+  }
+}
+
+#proposal_detail {
+  .title {
+    margin-bottom: 80px;
+  }
+  .tokens {
+    margin: 30px auto;
+  }
+  .amount {
+    font-size: 25px;
+    line-height: 15px;
+  }
+  .grace {
+    opacity: 0.5;
+  }
+  .members_row {
+    .image {
+      width: 60px !important;
+    }
+    .button {
+      width: 60px !important;
+      padding: 22px !important;
+      margin-top: 0.25em !important;
+    }
+  }
+}
+
+
+#proposal_submission {
+  input, textarea, select, .dropdown {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+  label {
+    color: white;
+    opacity: 0.5;
+  }
+  i {
+    float: left !important;
+  }
+  .amount {
+    font-size: 25px;
+    line-height: 15px;
+  }
+  .blurred.box {
+    height: 100%;
+  }
+  .delete_icon {
+    margin-top: 8px;
+  }
+}
+
+#guild_bank {
+  .guild_value {
+    .amount {
+      font-size: 50px;
+      line-height: 30px;
+    }
+  }
+  .text_link {
+    color: #fff !important;
+  }
+  .currency_element {
+    margin-bottom: 75px;
+  }
+}
