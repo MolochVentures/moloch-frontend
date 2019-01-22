@@ -15,17 +15,21 @@ class MainMenu extends Component {
   render() {
     return (
       <div>
-        <Link to={`/members/${user.name}`} className="item">
-          <p><Icon name="user"></Icon>View Profile</p>
-        </Link>
+        <Dropdown.Item className="item" onClick={()=> this.props._handleCloseDropdown()}>
+          <Link to={`/members/${user.name}`} className="link">
+            <p><Icon name="user" ></Icon>View Profile</p>
+          </Link>
+        </Dropdown.Item>
         <Dropdown.Divider />
-        <Dropdown.Item icon="dollar" className="item" content="Withdraw Loot Token" onClick={() => this.props.onLoadWithdrawLootToken()} />
+        <Dropdown.Item icon="dollar" className="item" content="Withdraw Loot Token" onClick={() => {this.props._handleOpenDropdown(); this.props.onLoadWithdrawLootToken()}} />
         <Dropdown.Divider />
-        <Dropdown.Item icon="key" className="item" content="Change Delegate Key" onClick={() => this.props.onLoadChangeDelegateKey()} />
+        <Dropdown.Item icon="key" className="item" content="Change Delegate Key" onClick={() => {this.props._handleOpenDropdown(); this.props.onLoadChangeDelegateKey()}} />
         <Dropdown.Divider />
-        <Link to="/login" className="item">
-          <p><Icon name="power off"></Icon>Sign Out</p>
-        </Link>
+        <Dropdown.Item className="item">
+          <Link to="/login" className="link">
+            <p><Icon name="power off"></Icon>Sign Out</p>
+          </Link>
+        </Dropdown.Item>
       </div>
     );
   }
@@ -77,8 +81,17 @@ export default class Header extends Component {
     super(props);
 
     this.state = {
-      visibleMenu: 'main'
+      visibleMenu: 'main',
+      visibleRightMenu: false
     }
+  }
+
+  _handleOpenDropdown() {
+    this.setState({visibleRightMenu: true});
+  }
+
+  _handleCloseDropdown() {
+    this.setState({visibleRightMenu: false});
   }
 
   render() {
@@ -86,13 +99,13 @@ export default class Header extends Component {
 
     switch(this.state.visibleMenu) {
       case 'main':
-        topRightMenuContent = <MainMenu onLoadChangeDelegateKey={() => this.setState({visibleMenu: 'changeDelegateKey'})} onLoadWithdrawLootToken={() => this.setState({visibleMenu: 'withdrawLootToken'})}></MainMenu>
+        topRightMenuContent = <MainMenu _handleOpenDropdown={() => this._handleOpenDropdown()} _handleCloseDropdown={() => this._handleCloseDropdown()}  onLoadChangeDelegateKey={() => this.setState({visibleMenu: 'changeDelegateKey'})} onLoadWithdrawLootToken={() => this.setState({visibleMenu: 'withdrawLootToken'})}></MainMenu>
         break;
       case 'changeDelegateKey':
-        topRightMenuContent = <ChangeDelegateKeyMenu onLoadMain={() => this.setState({visibleMenu: 'main'})}></ChangeDelegateKeyMenu>
+        topRightMenuContent = <ChangeDelegateKeyMenu onLoadMain={() => {this._handleOpenDropdown(); this.setState({visibleMenu: 'main'})}}></ChangeDelegateKeyMenu>
         break;
       case 'withdrawLootToken':
-        topRightMenuContent = <WithdrawLootTokenMenu onLoadMain={() => this.setState({visibleMenu: 'main'})}></WithdrawLootTokenMenu>
+        topRightMenuContent = <WithdrawLootTokenMenu onLoadMain={() => {this._handleOpenDropdown(); this.setState({visibleMenu: 'main'})}}></WithdrawLootTokenMenu>
         break;
     }
 
@@ -100,7 +113,7 @@ export default class Header extends Component {
       <div id="header">
         <Grid columns='equal' verticalAlign="middle">
           <Grid.Column textAlign="left" className="menu">
-            <Dropdown text={
+            <Dropdown  text={
               <Icon name="bars" />
             }>
               <Dropdown.Menu className="menu blurred" direction="right">
@@ -122,9 +135,13 @@ export default class Header extends Component {
             <Link to="/">MOLOCH</Link>
           </Grid.Column>
           <Grid.Column textAlign="right" className="dropdown">
-            <Dropdown text={
-              <Label circular color='teal' className="label">A</Label>
-            }>
+            <Dropdown 
+              open={this.state.visibleRightMenu} 
+              onBlur={() => this._handleCloseDropdown()}
+              onFocus={() => this._handleOpenDropdown()}
+              text={
+                <Label circular color='teal' className="label" >A</Label>
+              }>
               <Dropdown.Menu className="menu blurred" direction="left">
                 {topRightMenuContent}
               </Dropdown.Menu>
