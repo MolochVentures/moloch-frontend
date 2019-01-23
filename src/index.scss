@@ -235,7 +235,15 @@ body {
   @media screen and (min-width: 769px) and (max-width: 1024px) { 
   
     .blurred.box { padding: 30px 20px !important; }
+    .user { height: auto !important; }
+    .proposals {margin-top: 20px !important}
   }
+  
+  @media screen and (min-width: 1025px) and (max-width: 1366px) { 
+  
+    .blurred.box { padding: 30px 20px !important; }
+  }
+  
 }
 
 #proposal_list {
