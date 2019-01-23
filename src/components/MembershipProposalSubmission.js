@@ -10,35 +10,35 @@ class AssetsFields extends Component {
     }
 
     handleAsset(event, {value, name}) {
-        this.props.onHandleAsset({value, name});
+        this.props.onHandleAsset({value, name, assetIndex: this.props.assetIndex});
     }
 
     deleteAsset() {
-        console.log('Does nothing yet');
+        this.props.onHandleDeleteAsset({assetIndex: this.props.assetIndex});
     }
 
     render() {
         const assets = [
             {
                 'key': 1,
-                'value': 10,
+                'value': 'ETH',
                 'text': 'ETH'
             },
             {
                 'key': 2,
-                'value': 10,
+                'value': 'BTC',
                 'text': 'BTC'
             },
             {
                 'key': 3,
-                'value': 11,
+                'value': 'LTC',
                 'text': 'LTC'
             }
         ];
         return (
-            <Grid columns={16}>
+            <Grid.Row>
                 <Grid.Column width={7}>
-                    <Dropdown name="currency" icon="ethereum" selection options={assets} placeholder="Currency" onChange={this.handleAsset}/>
+                    <Dropdown name="asset" icon="ethereum" selection options={assets} placeholder="Currency" onChange={this.handleAsset}/>
                 </Grid.Column>
                 <Grid.Column width={7}>
                     <Input name="amount" placeholder="Enter Amount" type="number" onChange={this.handleAsset}/>
@@ -48,7 +48,7 @@ class AssetsFields extends Component {
                         <Icon name='times' className="delete_icon" link onClick={this.deleteAsset} />
                     </div>
                 </Grid.Column>
-            </Grid>
+            </Grid.Row>
         );
     }
 }
@@ -58,8 +58,12 @@ export default class MembershipProposalSubmission extends Component {
         super(props);
 
         this.state = {
+            id: '',
+            status: '',
+            closingTime: '',
+            gracePeriod: '',
             title: '',
-            shares: '',
+            shares: 0,
             tribute: 0,
             description: '',
             assets: []
@@ -69,30 +73,53 @@ export default class MembershipProposalSubmission extends Component {
         this.handleInput = this.handleInput.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleAsset = this.handleAsset.bind(this);
+        this.handleDeleteAsset = this.handleDeleteAsset.bind(this);
     }
 
     addAsset() {
         let assets = this.state.assets ? this.state.assets : [];
-        assets.push({
-            address: '',
-            symbol: '',
-            amount: 0,
-            price: 0,
-            logo: ''
-        });
+        assets.push({});
 
         this.setState({assets});
     }
 
     handleInput(event) {
-        this.setState({[event.target.name]: event.target.value});
+        if (event.target.name === 'shares') {
+            this.setState({[event.target.name]: parseInt(event.target.value)});
+        } else {
+            this.setState({[event.target.name]: event.target.value});
+        }
     }
 
     handleAsset(event) {
-        console.log(event);
+        let assets = this.state.assets;
+        assets[event.assetIndex][event.name] = event.value;
+        this.setState({assets});
     }
 
-    handleSubmit = () => console.log(this.state);
+    handleDeleteAsset(event) {
+        let assets = this.state.assets;
+        assets.splice(event.assetIndex, 1);
+        this.setState({assets});
+    }
+
+    handleSubmit() {
+        let self = this;
+
+        fetch('http://127.0.0.1:3000/proposals/membershipproposal', {
+            method: 'POST',
+            headers: {'Accept': 'application/json','Content-Type': 'application/json',},
+            body: JSON.stringify(this.state)
+        }).then(response => response.json()).then(responseJson => {
+            if (responseJson.id) {
+                console.log('Proposal submitted');
+                self.props.history.push('/members');
+            } else {
+                console.log(this.state);
+                console.log('Error processing proposal');
+            }
+        });
+    };
 
     render() {
         return (
@@ -136,7 +163,7 @@ export default class MembershipProposalSubmission extends Component {
                                             </Grid>
                                             <Grid columns='equal'>
                                                 {this.state.assets.map((row, i) =>
-                                                    <AssetsFields key={i} currency={row.symbol} amount={row.amount} onHandleAsset={this.handleAsset}></AssetsFields>
+                                                    <AssetsFields key={i} assetIndex={i} onHandleAsset={this.handleAsset} onHandleDeleteAsset={this.handleDeleteAsset}></AssetsFields>
                                                 )}
                                             </Grid>
                                             <Divider />
