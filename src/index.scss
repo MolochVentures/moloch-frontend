@@ -311,6 +311,10 @@ body {
   .delete_icon {
     margin-top: 8px;
   }
+  .assets_field {
+    overflow-y: auto;
+    height: 200px;
+  }
 }
 
 #guild_bank {

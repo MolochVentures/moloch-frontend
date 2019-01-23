@@ -79,7 +79,6 @@ export default class ProjectProposalSubmission extends Component {
     addAsset() {
         let assets = this.state.assets ? this.state.assets : [];
         assets.push({});
-
         this.setState({assets});
     }
 
@@ -90,6 +89,11 @@ export default class ProjectProposalSubmission extends Component {
     handleAsset(event) {
         let assets = this.state.assets;
         assets[event.assetIndex][event.name] = event.value;
+        // let tribute = 0;
+        // Object.keys(assets).map((key) => {
+        //     tribute+=parseInt(assets[key].amount);
+        // });
+        // this.setState({tribute: tribute});
         this.setState({assets});
     }
 
@@ -149,7 +153,7 @@ export default class ProjectProposalSubmission extends Component {
                                                     </div>
                                                 </Grid.Column>
                                             </Grid>
-                                            <Grid columns='equal'>
+                                            <Grid columns='equal' className="assets_field" >
                                                 {this.state.assets.map((row, i) =>
                                                     <AssetsFields key={i} assetIndex={i} onHandleAsset={this.handleAsset} onHandleDeleteAsset={this.handleDeleteAsset}></AssetsFields>
                                                 )}
