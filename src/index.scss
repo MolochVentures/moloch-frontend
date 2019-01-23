@@ -218,6 +218,24 @@ body {
       margin: 10px;
     }
   }
+
+  @media screen and (min-width: 320px) and (max-width: 375px) { 
+
+    .blurred.box { padding: 30px 7px !important; }
+    .user { height: auto !important; }
+  }
+  
+  @media screen and (min-width: 376px) and (max-width: 768px) { 
+  
+    .blurred.box { padding: 30px 20px !important; }
+    .user { height: auto !important; }
+    .proposals {margin-top: 20px !important}
+  }
+  
+  @media screen and (min-width: 769px) and (max-width: 1024px) { 
+  
+    .blurred.box { padding: 30px 20px !important; }
+  }
 }
 
 #proposal_list {
