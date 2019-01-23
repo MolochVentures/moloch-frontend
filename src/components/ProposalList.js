@@ -41,7 +41,7 @@ const ProgressBar = ({ yes, no }) => (
 );
 
 const ProposalCard = ({ proposal }) => (
-  <Grid.Column>
+  <Grid.Column mobile={16} tablet={8} computer={5}>
     <Link to={`/proposals/${proposal.id}`} className="uncolored">
       <Segment className="blurred box">
         <p className="name">{proposal.name}</p>
@@ -85,12 +85,12 @@ const ProposalCard = ({ proposal }) => (
 const ProposalList = () => (
   <div id="proposal_list">
     <Grid columns={16} verticalAlign="middle">
-      <Grid.Column width={8} textAlign="left">
+      <Grid.Column mobile={16} tablet={8} computer={8} textAlign="left">
         <p className="subtext">3 Proposals</p>
         <p className="title">Active</p>
       </Grid.Column>
 
-      <Grid.Column width={4} textAlign="right" floated="right" className="submit_button">
+      <Grid.Column mobile={16} tablet={8} computer={4} textAlign="right" floated="right" className="submit_button">
         <Link to='/projectproposalsubmission' className="link">
           <Button size='large' color='red'>Project Proposal</Button>
         </Link>
