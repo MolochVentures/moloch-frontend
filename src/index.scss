@@ -159,6 +159,66 @@ body {
   .text_link {
     color: #fff !important;
   }
+
+  
+  @media screen and (min-width: 320px) and (max-width: 375px) { 
+
+    .guild_value {
+      text-align: center;
+    }
+    .btn_link {
+      margin-bottom:  10px !important;
+      margin-left: 0px !important;
+      width: 200px !important;
+      padding-left: 5px !important;
+      padding-right: 5px !important;
+    }
+    .browse_buttons, .submit_button {
+      .link:not(:first-of-type) {
+        margin-left: 0px !important;
+      }
+    }
+    .graph_values {
+      text-align: center !important;
+      .amount {
+        font-size: 30px;
+        line-height: 35px;
+      }
+    }
+  }
+  
+  @media screen and (min-width: 376px) and (max-width: 768px) { 
+  
+    .guild_value {
+      text-align: center;
+    }
+    .btn_link {
+      margin-bottom:  10px !important;
+      margin-left: 0px !important;
+      width: 200px !important;
+      padding-left: 5px !important;
+      padding-right: 5px !important;
+    }
+    .browse_buttons, .submit_button {
+      .link:not(:first-of-type) {
+        margin-left: 0px !important;
+      }
+    }
+    .graph_values {
+      text-align: center !important;
+      .amount {
+        font-size: 30px;
+        line-height: 35px;
+      }
+    }
+  }
+  
+  @media screen and (min-width: 769px) and (max-width: 1024px) { 
+    .browse_buttons {
+      text-align: right;
+    }
+  }
+
 }
 
 #member_list {
