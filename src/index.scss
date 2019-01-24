@@ -230,10 +230,12 @@ body {
     margin: 0;
   }
   .members_row {
-    margin-top: 20px;
     .member {
-      margin-bottom: 35px;
+      margin-bottom: 40px;
     }
+  }
+  .member_avatar {
+    margin-top: 25px;
   }
 }
 
@@ -415,5 +417,13 @@ body {
   }
   .currency_element {
     margin-bottom: 75px;
+  }
+  .name {
+    margin-top: 10px;
+  }
+  .shares {
+    margin-bottom: 0px;
+    font-size: 16px;
+    font-weight: lighter;
   }
 }

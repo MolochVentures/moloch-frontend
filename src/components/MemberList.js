@@ -35,7 +35,7 @@ const elders = [
 const contributors = elders;
 
 const MemberAvatar = ({ name, shares }) => (
-  <Grid.Column width={3} textAlign="center">
+  <Grid.Column mobile={5} tablet={3} computer={3} textAlign="center" className="member_avatar" >
     <Link to={`/members/${name}`} className="uncolored">
       <Image src={hood} centered size='tiny' />
       <p className="name">{name}</p>
