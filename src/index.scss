@@ -243,7 +243,6 @@ body {
   //   margin-right: 1em;
   // }
   
-  
   @media screen and (min-width: 320px) and (max-width: 375px) { 
   
     .submit_button, .member_list_header {
@@ -419,11 +418,68 @@ body {
   }
   .delete_icon {
     margin-top: 8px;
+    text-align: center;
   }
   .assets_field {
     overflow-y: auto;
     height: 200px;
   }
+  .submit_button {
+    text-align: center !important;
+  }
+  
+  @media screen and (min-width: 320px) and (max-width: 375px) { 
+
+    .asset {
+      min-width: 100% !important;
+      padding-left: 3px !important;
+      padding-right: 3px !important;
+    }
+    .asset_amount {
+      padding: 0 !important;
+      min-width: 70% !important;
+    }
+    .blurred.box {
+      padding-left: 20px !important;
+      padding-right: 20px !important;
+    }
+
+    .asset_field_grid {
+      padding: 2px !important;
+      text-align: right !important;
+    }
+    .asset_field_row {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  }
+  
+  @media screen and (min-width: 376px) and (max-width: 768px) { 
+  
+    .asset {
+      min-width: 100% !important;
+      padding-left: 3px !important;
+      padding-right: 3px !important;
+    }
+    .asset_amount {
+      padding: 0 !important;
+      min-width: 70% !important;
+    }
+    .blurred.box {
+      padding-left: 20px !important;
+      padding-right: 20px !important;
+    }
+
+    .asset_field_grid {
+      padding: 2px !important;
+      text-align: right !important;
+    }
+    .asset_field_row {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  }
+  
 }
 
 #guild_bank {
