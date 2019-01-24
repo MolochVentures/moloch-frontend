@@ -159,6 +159,66 @@ body {
   .text_link {
     color: #fff !important;
   }
+
+  
+  @media screen and (min-width: 320px) and (max-width: 375px) { 
+
+    .guild_value {
+      text-align: center;
+    }
+    .btn_link {
+      margin-bottom:  10px !important;
+      margin-left: 0px !important;
+      width: 200px !important;
+      padding-left: 5px !important;
+      padding-right: 5px !important;
+    }
+    .browse_buttons, .submit_button {
+      .link:not(:first-of-type) {
+        margin-left: 0px !important;
+      }
+    }
+    .graph_values {
+      text-align: center !important;
+      .amount {
+        font-size: 30px;
+        line-height: 35px;
+      }
+    }
+  }
+  
+  @media screen and (min-width: 376px) and (max-width: 768px) { 
+  
+    .guild_value {
+      text-align: center;
+    }
+    .btn_link {
+      margin-bottom:  10px !important;
+      margin-left: 0px !important;
+      width: 200px !important;
+      padding-left: 5px !important;
+      padding-right: 5px !important;
+    }
+    .browse_buttons, .submit_button {
+      .link:not(:first-of-type) {
+        margin-left: 0px !important;
+      }
+    }
+    .graph_values {
+      text-align: center !important;
+      .amount {
+        font-size: 30px;
+        line-height: 35px;
+      }
+    }
+  }
+  
+  @media screen and (min-width: 769px) and (max-width: 1024px) { 
+    .browse_buttons {
+      text-align: right;
+    }
+  }
+
 }
 
 #member_list {
@@ -170,11 +230,33 @@ body {
     margin: 0;
   }
   .members_row {
-    margin-top: 20px;
     .member {
-      margin-bottom: 35px;
+      margin-bottom: 40px;
     }
   }
+  .member_avatar {
+    margin-top: 25px;
+  }
+
+  // .member_item {
+  //   margin-left: 1em;
+  //   margin-right: 1em;
+  // }
+  
+  @media screen and (min-width: 320px) and (max-width: 375px) { 
+  
+    .submit_button, .member_list_header {
+      text-align: center !important;
+    }
+  }
+  
+  @media screen and (min-width: 376px) and (max-width: 768px) { 
+  
+    .submit_button, .member_list_header {
+      text-align: center !important;
+    }
+  }
+
 }
 
 #member_detail {
@@ -218,6 +300,32 @@ body {
       margin: 10px;
     }
   }
+
+  @media screen and (min-width: 320px) and (max-width: 375px) { 
+
+    .blurred.box { padding: 30px 7px !important; }
+    .user { height: auto !important; }
+  }
+  
+  @media screen and (min-width: 376px) and (max-width: 768px) { 
+  
+    .blurred.box { padding: 30px 20px !important; }
+    .user { height: auto !important; }
+    .proposals {margin-top: 20px !important}
+  }
+  
+  @media screen and (min-width: 769px) and (max-width: 1024px) { 
+  
+    .blurred.box { padding: 30px 20px !important; }
+    .user { height: auto !important; }
+    .proposals {margin-top: 20px !important}
+  }
+  
+  @media screen and (min-width: 1025px) and (max-width: 1366px) { 
+  
+    .blurred.box { padding: 30px 20px !important; }
+  }
+  
 }
 
 #proposal_list {
@@ -310,11 +418,130 @@ body {
   }
   .delete_icon {
     margin-top: 8px;
+    text-align: center;
   }
   .assets_field {
     overflow-y: auto;
-    height: 200px;
+    max-height: 200px;
   }
+  .submit_button {
+    text-align: center !important;
+  }
+  
+  .computer_delete_icon {
+    display: block;
+  }
+  .mobile_delete_icon {
+    display: none;
+  }
+  
+  @media screen and (min-width: 320px) and (max-width: 767px) { 
+
+    .asset {
+      min-width: 100% !important;
+      padding-left: 3px !important;
+      padding-right: 3px !important;
+    }
+    .asset_amount {
+      padding: 0 !important;
+      min-width: 100% !important;
+    }
+    .blurred.box {
+      padding-left: 20px !important;
+      padding-right: 20px !important;
+    }
+
+    .asset_field_grid {
+      padding: 2px !important;
+      text-align: right !important;
+    }
+    .asset_field_row {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+    .delete_icon, .add_icon {
+      float: right !important;
+    }
+    .computer_delete_icon {
+      display: none;
+    }
+    .mobile_delete_icon {
+      display: block;
+    }
+  }
+
+  @media screen and (min-width: 768px) and (max-width: 1024px) { 
+  
+    .asset {
+      min-width: 100% !important;
+      padding-left: 3px !important;
+      padding-right: 3px !important;
+    }
+    .asset_amount {
+      padding: 0 !important;
+      min-width: 100% !important;
+    }
+    .blurred.box {
+      padding-left: 20px !important;
+      padding-right: 20px !important;
+    }
+
+    .asset_field_grid {
+      padding: 2px !important;
+      text-align: right !important;
+    }
+    .asset_field_row {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+    .delete_icon, .add_icon {
+      float: right !important;
+    }
+    .computer_delete_icon {
+      display: block;
+    }
+    .mobile_delete_icon {
+      display: none;
+    }
+  }
+
+  @media screen and (min-width: 1025px) { 
+  
+    .asset {
+      min-width: 100% !important;
+      padding-left: 3px !important;
+      padding-right: 3px !important;
+    }
+    .asset_amount {
+      padding: 0 !important;
+      min-width: 100% !important;
+    }
+    .blurred.box {
+      padding-left: 20px !important;
+      padding-right: 20px !important;
+    }
+
+    .asset_field_grid {
+      padding: 2px !important;
+      text-align: right !important;
+    }
+    .asset_field_row {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+    .delete_icon, .add_icon {
+      float: right !important;
+    }
+    .computer_delete_icon {
+      display: block;
+    }
+    .mobile_delete_icon {
+      display: none;
+    }
+  }
+
+  
+  
 }
 
 #guild_bank {
@@ -329,5 +556,13 @@ body {
   }
   .currency_element {
     margin-bottom: 75px;
+  }
+  .name {
+    margin-top: 10px;
+  }
+  .shares {
+    margin-bottom: 0px;
+    font-size: 16px;
+    font-weight: lighter;
   }
 }

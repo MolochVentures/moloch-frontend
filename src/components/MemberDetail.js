@@ -88,7 +88,7 @@ export default (props) => (
     <Divider />
     <Grid columns={16}>
       <Grid.Row className="details">
-        <Grid.Column width={6} className="user">
+        <Grid.Column mobile={16} tablet={16} computer={6} className="user" >
           <Segment className="blurred box">
             <Grid columns="equal">
               <Grid.Column>
@@ -128,7 +128,7 @@ export default (props) => (
             </Grid>
           </Segment>
         </Grid.Column>
-        <Grid.Column width={10} className="proposals">
+        <Grid.Column mobile={16} tablet={16} computer={10} className="proposals" >
           <Segment className="blurred box">
             <Grid columns="equal">
               <Grid.Row className="header">
