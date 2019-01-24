@@ -237,6 +237,27 @@ body {
   .member_avatar {
     margin-top: 25px;
   }
+
+  // .member_item {
+  //   margin-left: 1em;
+  //   margin-right: 1em;
+  // }
+  
+  
+  @media screen and (min-width: 320px) and (max-width: 375px) { 
+  
+    .submit_button, .member_list_header {
+      text-align: center !important;
+    }
+  }
+  
+  @media screen and (min-width: 376px) and (max-width: 768px) { 
+  
+    .submit_button, .member_list_header {
+      text-align: center !important;
+    }
+  }
+
 }
 
 #member_detail {

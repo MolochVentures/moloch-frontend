@@ -47,12 +47,12 @@ const MemberAvatar = ({ name, shares }) => (
 const MemberList = () => (
   <div id="member_list">
     <Grid columns={16} verticalAlign="middle">
-      <Grid.Column mobile={8} tablet={8} computer={8} textAlign="left">
+      <Grid.Column mobile={16} tablet={6} computer={6} textAlign="left" className="member_list_header">
         <p className="subtext">57 Members</p>
         <p className="title">Ranking</p>
       </Grid.Column>
 
-      <Grid.Column mobile={8} tablet={8} computer={8} textAlign="right" floated="right" className="submit_button">
+      <Grid.Column mobile={16} tablet={10} computer={10} textAlign="right" floated="middle" className="submit_button">
         <Link to='/membershipproposalsubmission' className="link">
           <Button size='large' color='red'>Membership Proposal</Button>
         </Link>
@@ -68,7 +68,7 @@ const MemberList = () => (
         </Link>
       </Grid.Column>
     </Grid>
-    <Grid>
+    <Grid className="member_item">
       <Grid.Row>
         <p>Elders</p>
       </Grid.Row>
@@ -77,7 +77,7 @@ const MemberList = () => (
         { elders.map((elder, idx) => <MemberAvatar {...elder} key={idx} />) }
       </Grid.Row>
     </Grid>
-    <Grid>
+    <Grid className="member_item">
       <Grid.Row>
         <p>Contributors</p>
       </Grid.Row>
