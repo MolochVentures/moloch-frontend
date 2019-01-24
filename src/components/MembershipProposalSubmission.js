@@ -36,14 +36,19 @@ class AssetsFields extends Component {
             }
         ];
         return (
-            <Grid.Row className="asset_field_row" >
-                <Grid.Column mobile={8} tablet={7} computer={7} className="asset_field_grid">
+            <Grid.Row className="asset_field_row">
+                <Grid.Column mobile={14} tablet={5} computer={7} className="asset_field_grid">
                     <Dropdown name="asset" className="asset" icon="ethereum" selection options={assets} placeholder="Currency" onChange={this.handleAsset} />
                 </Grid.Column>
-                <Grid.Column mobile={7} tablet={7} computer={7} className="asset_field_grid" >
+                <Grid.Column mobile={2} tablet={1} computer={2} className="asset_field_grid mobile_delete_icon" textAlign="right">
+                    <div className="subtext">
+                        <Icon name='times' className="delete_icon" link onClick={this.deleteAsset} />
+                    </div>
+                </Grid.Column>
+                <Grid.Column mobile={14} tablet={10} computer={7} className="asset_field_grid" >
                     <Input name="amount" className="asset_amount" placeholder="Enter Amount" type="number" onChange={this.handleAsset} />
                 </Grid.Column>
-                <Grid.Column mobile={1} tablet={2} computer={2} className="asset_field_grid" textAlign="center" >
+                <Grid.Column mobile={2} tablet={1} computer={2} className="asset_field_grid computer_delete_icon" textAlign="center">
                     <div className="subtext">
                         <Icon name='times' className="delete_icon" link onClick={this.deleteAsset} />
                     </div>
@@ -157,7 +162,7 @@ export default class MembershipProposalSubmission extends Component {
                                                 </Grid.Column>
                                                 <Grid.Column width={2}>
                                                     <div className="subtext">
-                                                        <Icon name='add' link onClick={this.addAsset} />
+                                                        <Icon name='add' className="add_icon" link onClick={this.addAsset} />
                                                     </div>
                                                 </Grid.Column>
                                             </Grid>

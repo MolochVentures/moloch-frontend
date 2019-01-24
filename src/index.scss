@@ -422,40 +422,21 @@ body {
   }
   .assets_field {
     overflow-y: auto;
-    height: 200px;
+    max-height: 200px;
   }
   .submit_button {
     text-align: center !important;
   }
   
-  @media screen and (min-width: 320px) and (max-width: 375px) { 
-
-    .asset {
-      min-width: 100% !important;
-      padding-left: 3px !important;
-      padding-right: 3px !important;
-    }
-    .asset_amount {
-      padding: 0 !important;
-      min-width: 70% !important;
-    }
-    .blurred.box {
-      padding-left: 20px !important;
-      padding-right: 20px !important;
-    }
-
-    .asset_field_grid {
-      padding: 2px !important;
-      text-align: right !important;
-    }
-    .asset_field_row {
-      padding-left: 10px;
-      padding-right: 10px;
-    }
+  .computer_delete_icon {
+    display: block;
+  }
+  .mobile_delete_icon {
+    display: none;
   }
   
-  @media screen and (min-width: 376px) and (max-width: 768px) { 
-  
+  @media screen and (min-width: 320px) and (max-width: 767px) { 
+
     .asset {
       min-width: 100% !important;
       padding-left: 3px !important;
@@ -463,7 +444,7 @@ body {
     }
     .asset_amount {
       padding: 0 !important;
-      min-width: 70% !important;
+      min-width: 100% !important;
     }
     .blurred.box {
       padding-left: 20px !important;
@@ -478,36 +459,88 @@ body {
       padding-left: 10px;
       padding-right: 10px;
     }
-  }
-
-  @media screen and (min-width: 1025px) and (max-width: 1366px) { 
-  
-    .asset {
-      min-width: 100% !important;
-      padding-left: 3px !important;
-      padding-right: 3px !important;
-    }
-    .asset_amount {
-      padding: 0 !important;
-      min-width: 70% !important;
-    }
-    .blurred.box {
-      padding-left: 20px !important;
-      padding-right: 20px !important;
-    }
-
-    .asset_field_grid {
-      padding: 2px !important;
-      text-align: right !important;
-    }
-    .asset_field_row {
-      padding-left: 10px;
-      padding-right: 10px;
-    }
-    .delete_icon {
+    .delete_icon, .add_icon {
       float: right !important;
     }
+    .computer_delete_icon {
+      display: none;
+    }
+    .mobile_delete_icon {
+      display: block;
+    }
   }
+
+  @media screen and (min-width: 768px) and (max-width: 1024px) { 
+  
+    .asset {
+      min-width: 100% !important;
+      padding-left: 3px !important;
+      padding-right: 3px !important;
+    }
+    .asset_amount {
+      padding: 0 !important;
+      min-width: 100% !important;
+    }
+    .blurred.box {
+      padding-left: 20px !important;
+      padding-right: 20px !important;
+    }
+
+    .asset_field_grid {
+      padding: 2px !important;
+      text-align: right !important;
+    }
+    .asset_field_row {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+    .delete_icon, .add_icon {
+      float: right !important;
+    }
+    .computer_delete_icon {
+      display: block;
+    }
+    .mobile_delete_icon {
+      display: none;
+    }
+  }
+
+  @media screen and (min-width: 1025px) { 
+  
+    .asset {
+      min-width: 100% !important;
+      padding-left: 3px !important;
+      padding-right: 3px !important;
+    }
+    .asset_amount {
+      padding: 0 !important;
+      min-width: 100% !important;
+    }
+    .blurred.box {
+      padding-left: 20px !important;
+      padding-right: 20px !important;
+    }
+
+    .asset_field_grid {
+      padding: 2px !important;
+      text-align: right !important;
+    }
+    .asset_field_row {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+    .delete_icon, .add_icon {
+      float: right !important;
+    }
+    .computer_delete_icon {
+      display: block;
+    }
+    .mobile_delete_icon {
+      display: none;
+    }
+  }
+
+  
   
 }
 
