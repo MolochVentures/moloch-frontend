@@ -127,14 +127,14 @@ export default class ProjectProposalSubmission extends Component {
                     <Grid centered columns={16}>
                         <Grid.Row stretched>
                             {/* <Grid.Column width={10}> */}
-                            <Grid.Column mobile={16} tablet={16} computer={10} >
+                            <Grid.Column mobile={16} tablet={16} computer={12} >
                                 <Input name="title" transparent size='big' inverted placeholder='Proposal Title' onChange={this.handleInput} value={this.state.title} />
                                 <Divider />
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row>
                             {/* <Grid.Column width={10}> */}
-                            <Grid.Column mobile={16} tablet={16} computer={10} >
+                            <Grid.Column mobile={16} tablet={16} computer={12} >
                                 <Grid columns='equal'>
                                     {/* <Grid.Column> */}
                                     <Grid.Column mobile={16} tablet={16} computer={8} >

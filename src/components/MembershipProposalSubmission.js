@@ -127,20 +127,20 @@ export default class MembershipProposalSubmission extends Component {
                 <Form>
                     <Grid centered columns={16}>
                         <Grid.Row stretched>
-                            <Grid.Column mobile={16} tablet={16} computer={10} >
+                            <Grid.Column mobile={16} tablet={16} computer={12} >
                                 <Input name="title" transparent size='big' inverted placeholder='Proposal Title' onChange={this.handleInput} value={this.state.title} />
                                 <Divider />
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row stretched>
-                            <Grid.Column mobile={16} tablet={16} computer={10} >
+                            <Grid.Column mobile={16} tablet={16} computer={12} >
                                 <Segment className="blurred box">
                                     <Form.Input name="shares" label="Request voting shares" placeholder="Shares" fluid type="number" onChange={this.handleInput} value={this.state.shares} />
                                 </Segment>
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row>
-                            <Grid.Column mobile={16} tablet={16} computer={10} >
+                            <Grid.Column mobile={16} tablet={16} computer={12} >
                                 <Grid columns='equal'>
                                     <Grid.Column>
                                         <Segment className="blurred box">
