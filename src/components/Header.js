@@ -26,7 +26,7 @@ class MainMenu extends Component {
         <Dropdown.Item icon="key" className="item" content="Change Delegate Key" onClick={() => {this.props._handleOpenDropdown(); this.props.onLoadChangeDelegateKey()}} />
         <Dropdown.Divider />
         <Dropdown.Item className="item">
-          <Link to="/login" className="link">
+          <Link to="/login" className="link" onClick={() => localStorage.removeItem("loggedUser")}>
             <p><Icon name="power off"></Icon>Sign Out</p>
           </Link>
         </Dropdown.Item>
