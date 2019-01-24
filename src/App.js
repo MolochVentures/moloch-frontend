@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 
 import Background from './components/Background';
 import Header from './components/Header';
@@ -21,12 +21,12 @@ const App = () => (
       <Header />
       <Wrapper>
         <Switch>
-          <Route exact path="/" component={Home} />
-          <Route path="/proposals" component={ProposalList} />
-          <Route path="/members" component={MemberList} />
-          <Route path="/projectproposalsubmission" component={ProjectProposalSubmission} />
-          <Route path="/membershipproposalsubmission" component={MembershipProposalSubmission} />
-          <Route path="/guildbank" component={GuildBank} />
+          <Route exact path="/" render={() => localStorage.getItem("loggedUser") ? <Home/> : <Redirect to={{pathname: '/login'}} />} />
+          <Route path="/proposals" render={() => localStorage.getItem("loggedUser") ? <ProposalList/> : <Redirect to={{pathname: '/login'}} />} />
+          <Route path="/members" render={() => localStorage.getItem("loggedUser") ? <MemberList/> : <Redirect to={{pathname: '/login'}} />} />
+          <Route path="/projectproposalsubmission" render={() => localStorage.getItem("loggedUser") ? <ProjectProposalSubmission/> : <Redirect to={{pathname: '/login'}} />} />
+          <Route path="/membershipproposalsubmission" render={() => localStorage.getItem("loggedUser") ? <MembershipProposalSubmission/> : <Redirect to={{pathname: '/login'}} />} />
+          <Route path="/guildbank" render={() => localStorage.getItem("loggedUser") ? <GuildBank/> : <Redirect to={{pathname: '/login'}} />} />
           <Route path="/login" component={Login} />
           <Route component={NotFound} />
         </Switch>
