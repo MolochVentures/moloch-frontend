@@ -18,27 +18,10 @@ class AssetsFields extends Component {
     }
 
     render() {
-        const assets = [
-            {
-                'key': 1,
-                'value': 'ETH',
-                'text': 'ETH'
-            },
-            {
-                'key': 2,
-                'value': 'BTC',
-                'text': 'BTC'
-            },
-            {
-                'key': 3,
-                'value': 'LTC',
-                'text': 'LTC'
-            }
-        ];
         return (
             <Grid.Row className="asset_field_row">
                 <Grid.Column mobile={14} tablet={5} computer={7} className="asset_field_grid">
-                    <Dropdown name="asset" className="asset" icon="ethereum" selection options={assets} placeholder="Currency" onChange={this.handleAsset} />
+                    <Input name="asset" className="asset" icon="ethereum" iconPosition="left" placeholder="Asset" onChange={this.handleAsset} type="text" />
                 </Grid.Column>
                 <Grid.Column mobile={2} tablet={1} computer={2} className="asset_field_grid mobile_delete_icon" textAlign="right">
                     <div className="subtext">
@@ -63,15 +46,15 @@ export default class MembershipProposalSubmission extends Component {
         super(props);
 
         this.state = {
-            id: '',
-            status: '',
-            closingTime: '',
-            gracePeriod: '',
+            publicAddress: JSON.parse(localStorage.getItem("loggedUser")).publicAddress,
+            nonce: JSON.parse(localStorage.getItem("loggedUser")).nonce,
+            name: JSON.parse(localStorage.getItem("loggedUser")).publicAddress,
             title: '',
             shares: 0,
-            tribute: 0,
+            value: 0,
             description: '',
-            assets: []
+            assets: [],
+            votes: []
         }
 
         this.addAsset = this.addAsset.bind(this);
@@ -110,13 +93,14 @@ export default class MembershipProposalSubmission extends Component {
 
     handleSubmit() {
         let self = this;
+        console.log(this.props.history);
 
-        fetch('http://127.0.0.1:3000/proposals/membershipproposal', {
-            method: 'POST',
+        fetch('http://127.0.0.1:3000/members/membershipproposal/' + JSON.parse(localStorage.getItem("loggedUser")).publicAddress, {
+            method: 'PATCH',
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', },
             body: JSON.stringify(this.state)
         }).then(response => response.json()).then(responseJson => {
-            if (responseJson.id) {
+            if (responseJson.publicAddress) {
                 console.log('Proposal submitted');
                 self.props.history.push('/members');
             } else {
@@ -176,7 +160,7 @@ export default class MembershipProposalSubmission extends Component {
                                                 <Grid.Row>
                                                     <Grid.Column textAlign="center">
                                                         <p className="subtext">Tribute Value</p>
-                                                        <p className="amount">${this.state.tribute}</p>
+                                                        <p className="amount">${this.state.value}</p>
                                                     </Grid.Column>
                                                 </Grid.Row>
                                             </Grid>
