@@ -17,10 +17,10 @@ export default class Login extends Component {
             let self = this;
 
             // Try getting a user by their public address.
-            fetch('http://127.0.0.1:3000/users/' + publicAddress).then(response => response.json()).then(responseJson => {
+            fetch('http://127.0.0.1:3000/members/' + publicAddress).then(response => response.json()).then(responseJson => {
                 if (responseJson.error && responseJson.error.code === "ENTITY_NOT_FOUND") { // If the user didn't exist.
                     // Create it.
-                    fetch('http://127.0.0.1:3000/users', {
+                    fetch('http://127.0.0.1:3000/members', {
                         method: 'POST',
                         headers: {'Accept': 'application/json','Content-Type': 'application/json',},
                         body: JSON.stringify({publicAddress: publicAddress,nonce:0})
@@ -38,10 +38,10 @@ export default class Login extends Component {
             let self = this;
 
             // Try getting a user by their public address.
-            fetch('http://127.0.0.1:3000/users/' + publicAddress).then(response => response.json()).then(responseJson => {
+            fetch('http://127.0.0.1:3000/members/' + publicAddress).then(response => response.json()).then(responseJson => {
                 if (responseJson.error && responseJson.error.code === "ENTITY_NOT_FOUND") { // If the user didn't exist.
                     // Create it.
-                    fetch('http://127.0.0.1:3000/users', {
+                    fetch('http://127.0.0.1:3000/members', {
                         method: 'POST',
                         headers: {'Accept': 'application/json','Content-Type': 'application/json',},
                         body: JSON.stringify({publicAddress: publicAddress,nonce:0})
@@ -79,7 +79,7 @@ export default class Login extends Component {
                 ).then((signature) => {
                     web3.personal.ecRecover(message, signature, function(error, result){
                         if (!error) {
-                            localStorage.setItem("loggedUser", JSON.stringify(result));
+                            localStorage.setItem("loggedUser", JSON.stringify({publicAddress: result, nonce}));
                             self.props.history.push('/');
                         } else {
                             console.log("Error while retrieving your public key.");
@@ -110,7 +110,7 @@ export default class Login extends Component {
         ).then((signature) => {
             web3.personal.ecRecover(message, signature, function(error, result){
                 if (!error) {
-                    localStorage.setItem("loggedUser", JSON.stringify(result));
+                    localStorage.setItem("loggedUser", JSON.stringify({publicAddress: result, nonce}));
                     self.props.history.push('/');
                 } else {
                     console.log("Error while retrieving your public key.");
