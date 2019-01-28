@@ -64,11 +64,7 @@ export default class ProjectProposalSubmission extends Component {
 
         this.state = {
             id: '',
-            status: '',
-            closingTime: '',
-            gracePeriod: '',
             title: '',
-            shares: 0,
             tribute: 0,
             description: '',
             assets: []
@@ -111,7 +107,7 @@ export default class ProjectProposalSubmission extends Component {
     handleSubmit() {
         let self = this;
 
-        fetch('http://127.0.0.1:3000/proposals/projectproposal', {
+        fetch('http://127.0.0.1:3000/projects', {
             method: 'POST',
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', },
             body: JSON.stringify(this.state)

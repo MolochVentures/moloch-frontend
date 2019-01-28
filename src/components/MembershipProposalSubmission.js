@@ -46,15 +46,13 @@ export default class MembershipProposalSubmission extends Component {
         super(props);
 
         this.state = {
-            publicAddress: JSON.parse(localStorage.getItem("loggedUser")).publicAddress,
+            address: JSON.parse(localStorage.getItem("loggedUser")).address,
             nonce: JSON.parse(localStorage.getItem("loggedUser")).nonce,
-            name: JSON.parse(localStorage.getItem("loggedUser")).publicAddress,
             title: '',
-            shares: 0,
-            value: 0,
             description: '',
-            assets: [],
-            votes: []
+            shares: 0,
+            tribute: 0, // TODO: this will be calculated with the blockchain
+            assets: []
         }
 
         this.addAsset = this.addAsset.bind(this);
@@ -95,12 +93,12 @@ export default class MembershipProposalSubmission extends Component {
         let self = this;
         console.log(this.props.history);
 
-        fetch('http://127.0.0.1:3000/members/membershipproposal/' + JSON.parse(localStorage.getItem("loggedUser")).publicAddress, {
+        fetch('http://127.0.0.1:3000/members/' + JSON.parse(localStorage.getItem("loggedUser")).address, {
             method: 'PATCH',
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', },
             body: JSON.stringify(this.state)
         }).then(response => response.json()).then(responseJson => {
-            if (responseJson.publicAddress) {
+            if (responseJson.address) {
                 console.log('Proposal submitted');
                 self.props.history.push('/members');
             } else {
@@ -160,7 +158,7 @@ export default class MembershipProposalSubmission extends Component {
                                                 <Grid.Row>
                                                     <Grid.Column textAlign="center">
                                                         <p className="subtext">Tribute Value</p>
-                                                        <p className="amount">${this.state.value}</p>
+                                                        <p className="amount">${this.state.tribute}</p>
                                                     </Grid.Column>
                                                 </Grid.Row>
                                             </Grid>
