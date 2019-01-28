@@ -58,6 +58,19 @@ class AssetsFields extends Component {
     }
 }
 
+// class FormErrors extends Component {
+
+//     render() {
+//         const formErrors = this.props.formErrors;
+//         return (
+//             <div className='formErrors'>
+//                 {formErrors ? <p>{formErrors}</p> : null}
+//             </div>
+//         )
+//     }
+
+// }
+
 export default class ProjectProposalSubmission extends Component {
     constructor(props) {
         super(props);
@@ -71,7 +84,12 @@ export default class ProjectProposalSubmission extends Component {
             shares: 0,
             tribute: 0,
             description: '',
-            assets: []
+            assets: [],
+            formErrors: { title: '', description: '', assets: '' },
+            titleValid: false,
+            descriptionValid: false,
+            assetsValid: false,
+            formValid: false
         }
 
         this.addAsset = this.addAsset.bind(this);
@@ -81,6 +99,54 @@ export default class ProjectProposalSubmission extends Component {
         this.handleDeleteAsset = this.handleDeleteAsset.bind(this);
     }
 
+    validateField(fieldName, value) {
+        let fieldValidationErrors = this.state.formErrors;
+        let titleValid = this.state.titleValid;
+        let descriptionValid = this.state.descriptionValid;
+        let assetsValid = this.state.assetsValid;
+
+        switch (fieldName) {
+            case 'title':
+                titleValid = value !== '';
+                fieldValidationErrors.title = titleValid ? '' : 'Title is invalid';
+                break;
+            case 'description':
+                descriptionValid = value !== '';
+                fieldValidationErrors.description = descriptionValid ? '' : 'Description is invalid';
+                break;
+            case 'assets':
+                Object.keys(value).map((key) => {
+                    for (var i in value[key]) {
+                        if (Object.keys(value[key]).length <= 1) {
+                            assetsValid = false;
+                            return false;
+                        } else {
+                            console.log('greater than 1')
+                            if (value[key][i] === null || value[key][i] === "") {
+                                assetsValid = false;
+                                return false;
+                            }
+                        }
+                    }
+                    assetsValid = true;
+                });
+                fieldValidationErrors.assets = assetsValid ? '' : 'Asset is invalid';
+                break;
+            default:
+                break;
+        }
+        this.setState({
+            formErrors: fieldValidationErrors,
+            titleValid: titleValid,
+            descriptionValid: descriptionValid,
+            assetsValid: assetsValid
+        }, this.validateForm);
+    }
+
+    validateForm() {
+        this.setState({ formValid: this.state.titleValid && this.state.descriptionValid && this.state.assetsValid });
+    }
+
     addAsset() {
         let assets = this.state.assets ? this.state.assets : [];
         assets.push({});
@@ -88,7 +154,13 @@ export default class ProjectProposalSubmission extends Component {
     }
 
     handleInput(event) {
-        this.setState({ [event.target.name]: event.target.value });
+        // console.log(event.target.name);
+        let name = event.target.name;
+        let value = event.target.value
+        this.setState({ [name]: value },
+            () => {
+                this.validateField(name, value);
+            });
     }
 
     handleAsset(event) {
@@ -99,30 +171,39 @@ export default class ProjectProposalSubmission extends Component {
         //     tribute+=parseInt(assets[key].amount);
         // });
         // this.setState({tribute: tribute});
-        this.setState({ assets });
+        this.setState({ assets },
+            () => {
+                this.validateField('assets', assets);
+            });
     }
 
     handleDeleteAsset(event) {
         let assets = this.state.assets;
         assets.splice(event.assetIndex, 1);
-        this.setState({ assets });
+        this.setState({ assets },
+            () => {
+                this.validateField('assets', assets);
+            });
     }
 
     handleSubmit() {
         let self = this;
-
-        fetch('http://127.0.0.1:3000/proposals/projectproposal', {
-            method: 'POST',
-            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', },
-            body: JSON.stringify(this.state)
-        }).then(response => response.json()).then(responseJson => {
-            if (responseJson.id) {
-                console.log('Proposal submitted');
-                self.props.history.push('/proposals');
-            } else {
-                console.log('Error processing proposal');
-            }
-        });
+        if (this.state.formValid) {
+            fetch('http://127.0.0.1:3000/proposals/projectproposal', {
+                method: 'POST',
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', },
+                body: JSON.stringify(this.state)
+            }).then(response => response.json()).then(responseJson => {
+                if (responseJson.id) {
+                    console.log('Proposal submitted');
+                    self.props.history.push('/proposals');
+                } else {
+                    console.log('Error processing proposal');
+                }
+            });
+        } else {
+            alert('Please, fill any missing field');
+        }
     };
 
     render() {
@@ -135,6 +216,7 @@ export default class ProjectProposalSubmission extends Component {
                             <Grid.Column mobile={16} tablet={16} computer={12} >
                                 <Input name="title" transparent size='big' inverted placeholder='Proposal Title' onChange={this.handleInput} value={this.state.title} />
                                 <Divider />
+                                {/* <FormErrors formErrors={this.state.formErrors.title} /> */}
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row>
@@ -145,6 +227,7 @@ export default class ProjectProposalSubmission extends Component {
                                     <Grid.Column mobile={16} tablet={16} computer={8} >
                                         <Segment className="blurred box">
                                             <Form.TextArea name="description" label="Description" placeholder="Type here" rows={15} onChange={this.handleInput} value={this.state.description}></Form.TextArea>
+                                            {/* <FormErrors formErrors={this.state.formErrors.description} /> */}
                                         </Segment>
                                     </Grid.Column>
                                     <Grid.Column>
@@ -174,6 +257,7 @@ export default class ProjectProposalSubmission extends Component {
                                                         <p className="amount">${this.state.tribute}</p>
                                                     </Grid.Column>
                                                 </Grid.Row>
+                                                {/* <FormErrors formErrors={this.state.formErrors.assets} /> */}
                                             </Grid>
                                         </Segment>
                                     </Grid.Column>
