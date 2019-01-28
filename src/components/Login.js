@@ -13,17 +13,17 @@ export default class Login extends Component {
     loginWithMetamask() {
         if (window.ethereum) { // Modern DApp browsers need to enable Metamask access.
             let web3 = window.web3;
-            let publicAddress = web3.eth.coinbase;
+            let address = web3.eth.coinbase;
             let self = this;
 
             // Try getting a user by their public address.
-            fetch('http://127.0.0.1:3000/members/' + publicAddress).then(response => response.json()).then(responseJson => {
+            fetch('http://127.0.0.1:3000/members/' + address).then(response => response.json()).then(responseJson => {
                 if (responseJson.error && responseJson.error.code === "ENTITY_NOT_FOUND") { // If the user didn't exist.
                     // Create it.
                     fetch('http://127.0.0.1:3000/members', {
                         method: 'POST',
                         headers: {'Accept': 'application/json','Content-Type': 'application/json',},
-                        body: JSON.stringify({publicAddress: publicAddress,nonce:0})
+                        body: JSON.stringify({address: address,nonce:0})
                     }).then(response => response.json()).then(responseJson => {
                         // Ask for a signature.
                         self.signWithAccessRequest(responseJson.nonce);
@@ -34,17 +34,17 @@ export default class Login extends Component {
             });
         } else if (window.web3) { // Legacy DApp browsers don't need to enable access.
             let web3 = window.web3;
-            let publicAddress = web3.eth.coinbase;
+            let address = web3.eth.coinbase;
             let self = this;
 
             // Try getting a user by their public address.
-            fetch('http://127.0.0.1:3000/members/' + publicAddress).then(response => response.json()).then(responseJson => {
+            fetch('http://127.0.0.1:3000/members/' + address).then(response => response.json()).then(responseJson => {
                 if (responseJson.error && responseJson.error.code === "ENTITY_NOT_FOUND") { // If the user didn't exist.
                     // Create it.
                     fetch('http://127.0.0.1:3000/members', {
                         method: 'POST',
                         headers: {'Accept': 'application/json','Content-Type': 'application/json',},
-                        body: JSON.stringify({publicAddress: publicAddress,nonce:0})
+                        body: JSON.stringify({address: address,nonce:0})
                     }).then(response => response.json()).then(responseJson => {
                         // Ask for a signature.
                         self.signWithoutAccessRequest(responseJson.nonce);
@@ -79,7 +79,7 @@ export default class Login extends Component {
                 ).then((signature) => {
                     web3.personal.ecRecover(message, signature, function(error, result){
                         if (!error) {
-                            localStorage.setItem("loggedUser", JSON.stringify({publicAddress: result, nonce}));
+                            localStorage.setItem("loggedUser", JSON.stringify({address: result, nonce}));
                             self.props.history.push('/');
                         } else {
                             console.log("Error while retrieving your public key.");
@@ -110,7 +110,7 @@ export default class Login extends Component {
         ).then((signature) => {
             web3.personal.ecRecover(message, signature, function(error, result){
                 if (!error) {
-                    localStorage.setItem("loggedUser", JSON.stringify({publicAddress: result, nonce}));
+                    localStorage.setItem("loggedUser", JSON.stringify({address: result, nonce}));
                     self.props.history.push('/');
                 } else {
                     console.log("Error while retrieving your public key.");
