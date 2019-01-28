@@ -52,7 +52,14 @@ export default class MembershipProposalSubmission extends Component {
             description: '',
             shares: 0,
             tribute: 0, // TODO: this will be calculated with the blockchain
-            assets: []
+            assets: [],
+            votes: [],
+            formErrors: { title: '', description: '', assets: '', shares: '' },
+            titleValid: false,
+            descriptionValid: false,
+            assetsValid: false,
+            sharesValid: false,
+            formValid: false
         }
 
         this.addAsset = this.addAsset.bind(this);
@@ -60,6 +67,61 @@ export default class MembershipProposalSubmission extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleAsset = this.handleAsset.bind(this);
         this.handleDeleteAsset = this.handleDeleteAsset.bind(this);
+    }
+
+    validateField(fieldName, value) {
+        let fieldValidationErrors = this.state.formErrors;
+        let titleValid = this.state.titleValid;
+        let descriptionValid = this.state.descriptionValid;
+        let assetsValid = this.state.assetsValid;
+        let sharesValid = this.state.sharesValid;
+
+        switch (fieldName) {
+            case 'title':
+                titleValid = value !== '';
+                fieldValidationErrors.title = titleValid ? '' : 'Title field is invalid';
+                break;
+            case 'description':
+                descriptionValid = value !== '';
+                fieldValidationErrors.description = descriptionValid ? '' : 'Description field is invalid';
+                break;
+            case 'assets':
+                Object.keys(value).map((key) => {
+                    for (var i in value[key]) {
+                        if (Object.keys(value[key]).length <= 1) {
+                            assetsValid = false;
+                            return false;
+                        } else {
+                            console.log('greater than 1')
+                            if (value[key][i] === null || value[key][i] === "") {
+                                assetsValid = false;
+                                return false;
+                            }
+                        }
+                    }
+                    assetsValid = true;
+                });
+                fieldValidationErrors.assets = assetsValid ? '' : 'Asset is invalid';
+                break;
+            case 'shares':
+                console.log('shares', value);
+                sharesValid = value > 0;
+                fieldValidationErrors.shares = sharesValid ? '' : 'Shares field is invalid';
+                break;
+            default:
+                break;
+        }
+        this.setState({
+            formErrors: fieldValidationErrors,
+            titleValid: titleValid,
+            descriptionValid: descriptionValid,
+            assetsValid: assetsValid,
+            sharesValid: sharesValid
+        }, this.validateForm);
+    }
+
+    validateForm() {
+        this.setState({ formValid: this.state.titleValid && this.state.descriptionValid && this.state.assetsValid && this.state.sharesValid });
     }
 
     addAsset() {
@@ -70,42 +132,59 @@ export default class MembershipProposalSubmission extends Component {
     }
 
     handleInput(event) {
-        if (event.target.name === 'shares') {
-            this.setState({ [event.target.name]: parseInt(event.target.value) });
+        let name = event.target.name;
+        let value = event.target.value
+        if (name === 'shares') {
+            this.setState({ [name]: parseInt(value) },
+                () => {
+                    this.validateField(name, value);
+                });
         } else {
-            this.setState({ [event.target.name]: event.target.value });
+            this.setState({ [event.target.name]: event.target.value },
+                () => {
+                    this.validateField(name, value);
+                });
         }
     }
 
     handleAsset(event) {
         let assets = this.state.assets;
         assets[event.assetIndex][event.name] = event.value;
-        this.setState({ assets });
+        this.setState({ assets },
+            () => {
+                this.validateField('assets', assets);
+            });
     }
 
     handleDeleteAsset(event) {
         let assets = this.state.assets;
         assets.splice(event.assetIndex, 1);
-        this.setState({ assets });
+        this.setState({ assets },
+            () => {
+                this.validateField('assets', assets);
+            });
     }
 
     handleSubmit() {
         let self = this;
-        console.log(this.props.history);
-
-        fetch('http://127.0.0.1:3000/members/' + JSON.parse(localStorage.getItem("loggedUser")).address, {
-            method: 'PATCH',
-            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', },
-            body: JSON.stringify(this.state)
-        }).then(response => response.json()).then(responseJson => {
-            if (responseJson.address) {
-                console.log('Proposal submitted');
-                self.props.history.push('/members');
-            } else {
-                console.log(this.state);
-                console.log('Error processing proposal');
-            }
-        });
+      
+        if (this.state.formValid) {
+            fetch('http://127.0.0.1:3000/members/' + JSON.parse(localStorage.getItem("loggedUser")).address, {
+                method: 'PATCH',
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', },
+                body: JSON.stringify(this.state)
+            }).then(response => response.json()).then(responseJson => {
+                if (responseJson.address) {
+                    console.log('Proposal submitted');
+                    self.props.history.push('/members');
+                } else {
+                    console.log(this.state);
+                    console.log('Error processing proposal');
+                }
+            });
+        } else {
+            alert('Please, fill any missing field');
+        }
     };
 
     render() {

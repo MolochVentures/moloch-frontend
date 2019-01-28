@@ -24,6 +24,11 @@ body {
   }
 }
 
+.formErrors {
+  color: red;
+  font-size: 12px;
+}
+
 //.blurred:before {
 //  content: '';
 //  position: absolute;
@@ -120,6 +125,10 @@ body {
         padding: 20px !important;
         color: inherit;
       }
+      .item:hover {
+        background-color: rgba(0,0,0,.1);
+        cursor: pointer;
+      }
       .link {
         color: inherit;
       }
@@ -181,9 +190,16 @@ body {
     .graph_values {
       text-align: center !important;
       .amount {
-        font-size: 30px;
-        line-height: 35px;
+        font-size: 14px !important;
+        line-height: 20px !important;
       }
+      .subtext {
+        margin-bottom: 5px !important;
+      }
+    }
+    .blurred {
+      padding-left: 10px !important;
+      padding-right: 10px !important;
     }
   }
   
@@ -207,9 +223,16 @@ body {
     .graph_values {
       text-align: center !important;
       .amount {
-        font-size: 30px;
-        line-height: 35px;
+        font-size: 14px !important;
+        line-height: 20px !important;
       }
+      .subtext {
+        margin-bottom: 5px !important;
+      }
+    }
+    .blurred {
+      padding-left: 10px !important;
+      padding-right: 10px !important;
     }
   }
   
@@ -389,13 +412,95 @@ body {
       width: 60px !important;
     }
     .button {
-      width: 60px !important;
-      padding: 22px !important;
+      width: 60px ;
+      padding: 22px ;
       margin-top: 0.25em !important;
     }
   }
-}
+  .description {
+    text-align: justify !important;
+  }
+  
+  .member_avatar {
+    margin-top: 25px;
+  }
 
+  .btn {
+    min-width: 200px;
+  }
+  
+  .pill {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .pill_column {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+  }
+  
+  @media screen and (min-width: 320px) and (max-width: 375px) { 
+    .pill_column {
+      text-align: center !important;
+    }
+    .pill {
+      padding-left: 30px !important;
+      padding-right: 30px !important;
+    }
+    .btn {
+      width: 100px !important;
+    }
+  }
+  
+  @media screen and (min-width: 376px) and (max-width: 768px) { 
+    .pill_column {
+      text-align: center !important;
+    }
+    .pill {
+      padding-left: 30px !important;
+      padding-right: 30px !important;
+    }
+    .btn {
+      width: 100px !important;
+    }
+    .tributes {
+      margin-top: 10px !important;
+    }
+    .caret_btn {
+      width: 60px !important;
+      height: 60px !important;
+      padding: 22px !important;
+      }
+  }
+  
+  @media screen and (min-width: 769px) and (max-width: 1825px) { 
+    .btn {
+      min-width: 100px !important;
+    }
+    .tributes {
+      margin-top: 10px !important;
+      padding: 5px !important;
+    }
+
+    .caret_btn {
+      width: 50px !important;
+      height: 50px !important;
+      padding: 0 !important;
+      }
+  }
+  
+  @media screen and (min-width: 1325px )   { 
+    .pill {
+      padding-left: 30px !important;
+      padding-right: 30px !important;
+    }
+    .caret_btn {
+      width: 60px !important;
+      height: 60px !important;
+      padding: 22px !important;
+    }
+  }
+}
 
 #proposal_submission {
   input, textarea, select, .dropdown {
