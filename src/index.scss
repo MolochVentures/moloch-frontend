@@ -186,9 +186,16 @@ body {
     .graph_values {
       text-align: center !important;
       .amount {
-        font-size: 30px;
-        line-height: 35px;
+        font-size: 14px !important;
+        line-height: 20px !important;
       }
+      .subtext {
+        margin-bottom: 5px !important;
+      }
+    }
+    .blurred {
+      padding-left: 10px !important;
+      padding-right: 10px !important;
     }
   }
   
@@ -212,9 +219,16 @@ body {
     .graph_values {
       text-align: center !important;
       .amount {
-        font-size: 30px;
-        line-height: 35px;
+        font-size: 14px !important;
+        line-height: 20px !important;
       }
+      .subtext {
+        margin-bottom: 5px !important;
+      }
+    }
+    .blurred {
+      padding-left: 10px !important;
+      padding-right: 10px !important;
     }
   }
   
