@@ -8,9 +8,6 @@ const user = {
 };
 
 class MainMenu extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     return (
@@ -36,9 +33,6 @@ class MainMenu extends Component {
 }
 
 class ChangeDelegateKeyMenu extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     return (
@@ -56,9 +50,6 @@ class ChangeDelegateKeyMenu extends Component {
 }
 
 class WithdrawLootTokenMenu extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     return (
@@ -107,15 +98,15 @@ export default class Header extends Component {
       case 'withdrawLootToken':
         topRightMenuContent = <WithdrawLootTokenMenu onLoadMain={() => {this._handleOpenDropdown(); this.setState({visibleMenu: 'main'})}}></WithdrawLootTokenMenu>
         break;
+      default:
+        break;
     }
 
     return(
       <div id="header">
         <Grid columns='equal' verticalAlign="middle">
           <Grid.Column textAlign="left" className="menu">
-            <Dropdown  text={
-              <Icon name="bars" />
-            }>
+            <Dropdown icon="bars">
               <Dropdown.Menu className="menu blurred" direction="right">
                 <Link to="guildbank" className="item">
                   <p>Guild Bank</p>
@@ -139,9 +130,12 @@ export default class Header extends Component {
               open={this.state.visibleRightMenu} 
               onBlur={() => this._handleCloseDropdown()}
               onFocus={() => this._handleOpenDropdown()}
+              // className="aaa"
+              // circular
               text={
-                <Label circular color='teal' className="label" >A</Label>
-              }>
+                <Label circular color='teal' className="label" >A </Label>}
+              // text="A" 
+              >
               <Dropdown.Menu className="menu blurred" direction="left">
                 {topRightMenuContent}
               </Dropdown.Menu>

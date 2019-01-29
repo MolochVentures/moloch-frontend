@@ -124,6 +124,7 @@ export default class ProjectProposalSubmission extends Component {
                         }
                     }
                     assetsValid = true;
+                    return true;
                 });
                 fieldValidationErrors.assets = assetsValid ? '' : 'Asset is invalid';
                 break;

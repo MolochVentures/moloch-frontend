@@ -3,21 +3,24 @@ import { Divider, Grid, Icon, Segment, Button, Progress, Image } from "semantic-
 import { Link } from "react-router-dom";
 import hood from 'assets/hood.png';
 
+import { connect } from 'react-redux';
+import { fetchProposalDetail } from './actions';
 
-const tributes = [
-  {
-    'amount': 10,
-    'currency': 'ETH'
-  },
-  {
-    'amount': 10,
-    'currency': 'BTC'
-  },
-  {
-    'amount': 11,
-    'currency': 'LTC'
-  }
-];
+
+// const tributes = [
+//   {
+//     'amount': 10,
+//     'currency': 'ETH'
+//   },
+//   {
+//     'amount': 10,
+//     'currency': 'BTC'
+//   },
+//   {
+//     'amount': 11,
+//     'currency': 'LTC'
+//   }
+// ];
 
 const elders = [
   {
@@ -92,8 +95,8 @@ export default class ProposalDetail extends Component {
   }
   
   componentDidMount() {
-    // Retrieve the data of the proposal. TODO: make this dinamic.
-    fetch('http://127.0.0.1:3000/projects/0783d41f-8880-0280-7e77-b76ec0fb52f8').then(response => response.json()).then(responseJson => {
+    // Retrieve the data of the proposal.
+    this.props.fetchProposalDetail(this.props.match.params.id).then(response => response.json()).then(responseJson => {
       if (responseJson.id) {
         // Store the proposal data on the state.
         this.setState(responseJson);
@@ -174,39 +177,28 @@ export default class ProposalDetail extends Component {
             <Grid centered columns={10}  >
               <Grid.Column mobile={16} tablet={16} computer={4}  >
                 <div className="subtext description">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                  sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisiut aliquip ex ea commodo consequat.
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                  sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisiut aliquip ex ea commodo consequat.
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                  sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisiut aliquip ex ea commodo consequat.
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                  sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisiut aliquip ex ea commodo consequat.
+                  {this.props.proposal_detail.description}
                 </div>
 
                 <Grid columns="equal" className="tokens">
                   <Grid.Row>
-                    {tributes.map((token, idx) => (
-                      <Grid.Column key={idx} mobile={16} tablet={8} computer={5} className="tributes">
+                    {this.props.proposal_detail.assets.map((token, idx) => (
+                      <Grid.Column key={idx} className="tributes">
                         <Segment className="pill" textAlign="center">
-                          <Icon name="ethereum" />{token.amount} {token.currency}
+                          <Icon name="ethereum" />{token.amount} {token.asset}
                         </Segment>
                       </Grid.Column>
                     ))}
                   </Grid.Row>
-                  <Grid.Row>
-                    {tributes.map((token, idx) => (
+                  {/* <Grid.Row>
+                    {this.props.proposal_detail.assets.map((token, idx) => (
                       <Grid.Column key={idx} mobile={16} tablet={8} computer={5} className="tributes">
                         <Segment className="pill" textAlign="center">
-                          <Icon name="ethereum" />{token.amount} {token.currency}
+                          <Icon name="ethereum" />{token.amount} {token.asset}
                         </Segment>
                       </Grid.Column>
                     ))}
-                  </Grid.Row>
+                  </Grid.Row> */}
                 </Grid>
                 <Grid columns="equal">
                   <Grid.Column>
@@ -215,7 +207,7 @@ export default class ProposalDetail extends Component {
                   </Grid.Column>
                   <Grid.Column textAlign="right">
                     <p className="subtext voting">Voting Shares (15%)</p>
-                    <p className="amount">3,056,128</p>
+                    <p className="amount">200</p>
                   </Grid.Column>
                 </Grid>
               </Grid.Column>
@@ -230,12 +222,12 @@ export default class ProposalDetail extends Component {
                   <Grid.Column textAlign="left" mobile={16} tablet={8} computer={8} className="pill_column" >
                     <span className="pill">
                       <span className="subtext">Voting Ends:</span>&nbsp; 12 days
-                  </span>
+                    </span>
                   </Grid.Column>
                   <Grid.Column textAlign="right" className="pill_column grace" mobile={16} tablet={8} computer={8}>
                     <span className="pill">
-                      <span className="subtext">Grace Period:</span>&nbsp; 12 days
-                  </span>
+                      <span className="subtext">Grace Period:</span>&nbsp; {this.props.proposal_detail.period}
+                    </span>
                   </Grid.Column>
                 </Grid>
                 <Grid columns={16} >
@@ -247,7 +239,7 @@ export default class ProposalDetail extends Component {
                           {elders.map((elder, idx) => <MemberAvatar {...elder} key={idx} />)}
 
                           <Grid.Column mobile={4} tablet={3} computer={3} textAlign="center" className="member_avatar">
-                            <Button className="caret_btn" circular centered icon='caret down' color='grey' />
+                            <Button className="caret_btn" circular icon='caret down' color='grey' />
                             <p className="name">...</p>
                           </Grid.Column>
                         </Grid.Row>
@@ -281,3 +273,21 @@ export default class ProposalDetail extends Component {
     );
   }
 }
+
+// This function is used to convert redux global state to desired props.
+function mapStateToProps(state) {
+  return {
+    proposal_detail: state.proposalDetail.items
+  };
+}
+
+// This function is used to provide callbacks to container component.
+function mapDispatchToProps(dispatch) {
+  return {
+    fetchProposalDetail: function (id) {
+      dispatch(fetchProposalDetail(id));
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProposalDetail);

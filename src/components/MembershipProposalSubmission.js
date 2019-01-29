@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Divider, Dropdown, Form, Grid, Icon, Input, Segment, GridColumn } from "semantic-ui-react";
+import { Button, Divider, Form, Grid, Icon, Input, Segment, GridColumn } from "semantic-ui-react";
 
 class AssetsFields extends Component {
     constructor(props) {
@@ -98,6 +98,7 @@ export default class MembershipProposalSubmission extends Component {
                         }
                     }
                     assetsValid = true;
+                    return true;
                 });
                 fieldValidationErrors.assets = assetsValid ? '' : 'Asset is invalid';
                 break;

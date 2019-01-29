@@ -12,11 +12,12 @@ import MembershipProposalSubmission from './components/MembershipProposalSubmiss
 import GuildBank from './components/GuildBank';
 import Login from './components/Login';
 import NotFound from './components/NotFound';
-
+import { store } from './store';
+const Provider = require('react-redux').Provider;
 
 const App = () => (
-  <Router>
-    <>
+  <Router >
+    <Provider store={store}>
       <Background />
       <Header />
       <Wrapper>
@@ -31,7 +32,7 @@ const App = () => (
           <Route component={NotFound} />
         </Switch>
       </Wrapper>
-    </>
+    </Provider>
   </Router>
 );
 
