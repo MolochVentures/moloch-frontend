@@ -162,7 +162,7 @@ export default (props) => (
                       {elders.map((elder, idx) => <MemberAvatar {...elder} key={idx} />)}
 
                       <Grid.Column mobile={4} tablet={3} computer={3} textAlign="center" className="member_avatar">
-                        <Button className="caret_btn" circular centered icon='caret down' color='grey' />
+                        <Button className="caret_btn" circular icon='caret down' color='grey' />
                         <p className="name">...</p>
                       </Grid.Column>
                     </Grid.Row>

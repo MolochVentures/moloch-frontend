@@ -21,7 +21,7 @@ export default () => (
         </Link>
       </Grid.Column>
       
-    <Grid.Column mobile={0} tablet={0} computer={4}  ></Grid.Column>
+    <Grid.Column computer={4}  />
 
       <Grid.Column width={16}>
         <Segment className="blurred box">

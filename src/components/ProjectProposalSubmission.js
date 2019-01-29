@@ -121,7 +121,6 @@ export default class ProjectProposalSubmission extends Component {
                             assetsValid = false;
                             return false;
                         } else {
-                            console.log('greater than 1')
                             if (value[key][i] === null || value[key][i] === "") {
                                 assetsValid = false;
                                 return false;
@@ -129,6 +128,7 @@ export default class ProjectProposalSubmission extends Component {
                         }
                     }
                     assetsValid = true;
+                    return true;
                 });
                 fieldValidationErrors.assets = assetsValid ? '' : 'Asset is invalid';
                 break;

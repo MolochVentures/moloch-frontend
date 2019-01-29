@@ -111,7 +111,7 @@ export default (props) => (
                 {tributes.map((token, idx) => (
                   <Grid.Column key={idx}>
                     <Segment className="pill" textAlign="center">
-                      <Icon name="ethereum" />{ token.amount } { token.currency }
+                      <Icon name="ethereum" />{token.amount} {token.currency}
                     </Segment>
                   </Grid.Column>
                 ))}
@@ -120,7 +120,7 @@ export default (props) => (
                 {tributes.map((token, idx) => (
                   <Grid.Column key={idx}>
                     <Segment className="pill" textAlign="center">
-                      <Icon name="ethereum" />{ token.amount } { token.currency }
+                      <Icon name="ethereum" />{token.amount} {token.currency}
                     </Segment>
                   </Grid.Column>
                 ))}
@@ -143,26 +143,26 @@ export default (props) => (
                 </Grid.Column>
               </Grid.Row>
               {proposals.map((p, idx) => (
-                <>
-                <Grid.Row verticalAlign="middle">
-                  <Grid.Column textAlign="left">
-                    { p.action === "Voted Yes" && <Label className="dot" circular color="green" empty /> }
-                    { p.action === "Voted No" && <Label className="dot" circular color="red" empty /> }
-                    { p.action === "Submitted" && <Label className="dot" circular color="grey" empty /> }
-                    { p.name }
-                  </Grid.Column>
-                  <Grid.Column textAlign="center">
-                    <p className="subtext date">{ p.date }</p>
-                  </Grid.Column>
-                  <Grid.Column textAlign="right">
-                    <Header as="p"
-                            color={p.action === "Voted Yes" ? "green" : p.action === "Voted No" ? "red" : "white"}>
-                      { p.action }
-                    </Header>
-                  </Grid.Column>
-                </Grid.Row>
-                <Divider />
-                </>
+                <React.Fragment key={idx}>
+                  <Grid.Row verticalAlign="middle">
+                    <Grid.Column textAlign="left">
+                      {p.action === "Voted Yes" && <Label className="dot" circular color="green" empty />}
+                      {p.action === "Voted No" && <Label className="dot" circular color="red" empty />}
+                      {p.action === "Submitted" && <Label className="dot" circular color="grey" empty />}
+                      {p.name}
+                    </Grid.Column>
+                    <Grid.Column textAlign="center">
+                      <p className="subtext date">{p.date}</p>
+                    </Grid.Column>
+                    <Grid.Column textAlign="right">
+                      <Header as="p"
+                        color={p.action === "Voted Yes" ? "green" : p.action === "Voted No" ? "red" : null}>
+                        {p.action}
+                      </Header>
+                    </Grid.Column>
+                  </Grid.Row>
+                  <Divider />
+                </React.Fragment>
               ))}
             </Grid>
           </Segment>
