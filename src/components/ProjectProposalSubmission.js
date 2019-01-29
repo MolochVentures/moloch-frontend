@@ -117,7 +117,6 @@ export default class ProjectProposalSubmission extends Component {
                             assetsValid = false;
                             return false;
                         } else {
-                            console.log('greater than 1')
                             if (value[key][i] === null || value[key][i] === "") {
                                 assetsValid = false;
                                 return false;
@@ -150,7 +149,6 @@ export default class ProjectProposalSubmission extends Component {
     }
 
     handleInput(event) {
-        // console.log(event.target.name);
         let name = event.target.name;
         let value = event.target.value
         this.setState({ [name]: value },
@@ -162,11 +160,6 @@ export default class ProjectProposalSubmission extends Component {
     handleAsset(event) {
         let assets = this.state.assets;
         assets[event.assetIndex][event.name] = event.value;
-        // let tribute = 0;
-        // Object.keys(assets).map((key) => {
-        //     tribute+=parseInt(assets[key].amount);
-        // });
-        // this.setState({tribute: tribute});
         this.setState({ assets },
             () => {
                 this.validateField('assets', assets);
@@ -184,18 +177,24 @@ export default class ProjectProposalSubmission extends Component {
 
     handleSubmit() {
         let self = this;
+        var project = {
+            id: this.state.id,
+            title: this.state.title,
+            tribute: this.state.tribute,
+            description: this.state.description,
+            assets: this.state.assets
+        }
       
         if (this.state.formValid) {
-            fetch('http://127.0.0.1:3000/projects', {
+            fetch('http://127.0.0.1:3000/events', {
                 method: 'POST',
                 headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', },
-                body: JSON.stringify(this.state)
+                body: JSON.stringify({ id: '', name: 'Project proposal', payload: project })
             }).then(response => response.json()).then(responseJson => {
                 if (responseJson.id) {
-                    console.log('Proposal submitted');
                     self.props.history.push('/proposals');
                 } else {
-                    console.log('Error processing proposal');
+                    alert('Error processing proposal');
                 }
             });
         } else {
