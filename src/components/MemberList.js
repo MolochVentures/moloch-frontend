@@ -52,7 +52,7 @@ const MemberList = () => (
         <p className="title">Ranking</p>
       </Grid.Column>
 
-      <Grid.Column mobile={16} tablet={10} computer={10} textAlign="right" floated="middle" className="submit_button">
+      <Grid.Column mobile={16} tablet={10} computer={10} textAlign="right" className="submit_button">
         <Link to='/membershipproposalsubmission' className="link">
           <Button size='large' color='red'>Membership Proposal</Button>
         </Link>

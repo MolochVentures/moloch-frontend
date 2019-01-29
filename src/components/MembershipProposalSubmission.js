@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Divider, Dropdown, Form, Grid, Icon, Input, Segment, GridColumn } from "semantic-ui-react";
+import { Button, Divider, Form, Grid, Icon, Input, Segment, GridColumn } from "semantic-ui-react";
 
 class AssetsFields extends Component {
     constructor(props) {
@@ -92,7 +92,6 @@ export default class MembershipProposalSubmission extends Component {
                             assetsValid = false;
                             return false;
                         } else {
-                            console.log('greater than 1')
                             if (value[key][i] === null || value[key][i] === "") {
                                 assetsValid = false;
                                 return false;
@@ -100,11 +99,11 @@ export default class MembershipProposalSubmission extends Component {
                         }
                     }
                     assetsValid = true;
+                    return true;
                 });
                 fieldValidationErrors.assets = assetsValid ? '' : 'Asset is invalid';
                 break;
             case 'shares':
-                console.log('shares', value);
                 sharesValid = value > 0;
                 fieldValidationErrors.shares = sharesValid ? '' : 'Shares field is invalid';
                 break;
