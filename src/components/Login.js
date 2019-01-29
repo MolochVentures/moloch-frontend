@@ -20,10 +20,10 @@ export default class Login extends Component {
             fetch('http://127.0.0.1:3000/members/' + address).then(response => response.json()).then(responseJson => {
                 if (responseJson.error && responseJson.error.code === "ENTITY_NOT_FOUND") { // If the user didn't exist.
                     // Create it.
-                    fetch('http://127.0.0.1:3000/members', {
+                    fetch('http://127.0.0.1:3000/events', {
                         method: 'POST',
                         headers: {'Accept': 'application/json','Content-Type': 'application/json',},
-                        body: JSON.stringify({address: address,nonce:0})
+                        body: JSON.stringify({ id: '', name: 'User creation', payload: {address: address, nonce:0}})
                     }).then(response => response.json()).then(responseJson => {
                         // Ask for a signature.
                         self.signWithAccessRequest(responseJson.nonce);
@@ -41,10 +41,10 @@ export default class Login extends Component {
             fetch('http://127.0.0.1:3000/members/' + address).then(response => response.json()).then(responseJson => {
                 if (responseJson.error && responseJson.error.code === "ENTITY_NOT_FOUND") { // If the user didn't exist.
                     // Create it.
-                    fetch('http://127.0.0.1:3000/members', {
+                    fetch('http://127.0.0.1:3000/events', {
                         method: 'POST',
                         headers: {'Accept': 'application/json','Content-Type': 'application/json',},
-                        body: JSON.stringify({address: address,nonce:0})
+                        body: JSON.stringify({ name: 'User creation', payload: {address: address, nonce: 0}})
                     }).then(response => response.json()).then(responseJson => {
                         // Ask for a signature.
                         self.signWithoutAccessRequest(responseJson.nonce);
@@ -54,7 +54,7 @@ export default class Login extends Component {
                 }
             });
         } else { // Non-DApp browsers won't work.
-            console.log("Metamask needs to be installed and configured.");
+            alert("Metamask needs to be installed and configured.");
         }
     }
 
@@ -70,7 +70,7 @@ export default class Login extends Component {
                 return new Promise((resolve, reject) =>
                     web3.personal.sign(web3.fromUtf8(message), web3.eth.coinbase, (error, signature) => {
                             if (error) {
-                                console.log("The message needs to be signed.");
+                                alert("The message needs to be signed.");
                                 return reject(error);
                             }
                             return resolve(signature);
@@ -82,13 +82,13 @@ export default class Login extends Component {
                             localStorage.setItem("loggedUser", JSON.stringify({address: result, nonce}));
                             self.props.history.push('/');
                         } else {
-                            console.log("Error while retrieving your public key.");
+                            alert("Error while retrieving your public key.");
                         }
                     });
                 });
             });
         } catch (error) {
-            console.log("Metamask needs to be enabled.");
+            alert("Metamask needs to be enabled.");
         };
     }
 
@@ -101,7 +101,7 @@ export default class Login extends Component {
         return new Promise((resolve, reject) =>
                 web3.personal.sign(web3.fromUtf8(message), web3.eth.coinbase, (error, signature) => {
                     if (error) {
-                        console.log("The message needs to be signed.");
+                        alert("The message needs to be signed.");
                         return reject(error);
                     }
                     return resolve(signature);
@@ -113,7 +113,7 @@ export default class Login extends Component {
                     localStorage.setItem("loggedUser", JSON.stringify({address: result, nonce}));
                     self.props.history.push('/');
                 } else {
-                    console.log("Error while retrieving your public key.");
+                    alert("Error while retrieving your public key.");
                 }
             });
         });

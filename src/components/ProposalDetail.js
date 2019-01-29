@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Divider, Grid, Icon, Segment, Button, Progress, Image } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import hood from 'assets/hood.png';
@@ -80,10 +80,88 @@ const MemberAvatar = ({ name, shares }) => (
   </Grid.Column>
 );
 
-class ProposalDetail extends React.Component {
+export default class ProposalDetail extends Component {
+  constructor(props) {
+    super(props);
 
+    this.state = {
+      loggedUser: JSON.parse(localStorage.getItem('loggedUser')).address
+    }
+
+    this.handleNo = this.handleNo.bind(this);
+    this.handleYes = this.handleYes.bind(this);
+    this.handleProcess = this.handleProcess.bind(this);
+    this.sendProposalUpdate = this.sendProposalUpdate.bind(this);
+  }
+  
   componentDidMount() {
-    this.props.fetchProposalDetail(this.props.match.params.id);
+    // Retrieve the data of the proposal.
+    this.props.fetchProposalDetail(this.props.match.params.id).then(response => response.json()).then(responseJson => {
+      if (responseJson.id) {
+        // Store the proposal data on the state.
+        this.setState(responseJson);
+
+        // Check if the user that is currently viewing the proposal has voted before to disable the voting buttons.
+        let voters = this.state.voters ? this.state.voters : [];
+        let userHasVoted = voters.find(voter => voter.member === this.state.loggedUser) ? true : false;
+        this.setState({userHasVoted});
+      } else {
+        alert('Error retrieving the proposal.');
+      }
+    });
+  }
+
+  handleNo() {
+    // Add the voter to the voters of the proposal.
+    let voters = this.state.voters ? this.state.voters : [];
+    voters.push({
+      member: JSON.parse(localStorage.getItem("loggedUser")).address,
+      vote: 'no'
+    });
+    this.setState({voters: voters, userHasVoted: true});
+    this.sendProposalUpdate('Project proposal voted', voters);
+  }
+
+  handleYes() {
+    // Add the voter to the voters of the proposal.
+    let voters = this.state.voters ? this.state.voters : [];
+    voters.push({
+      member: JSON.parse(localStorage.getItem("loggedUser")).address,
+      vote: 'yes'
+    });
+    this.setState({voters: voters, userHasVoted: true});
+    this.sendProposalUpdate('Project proposal voted', voters);
+  }
+
+  handleProcess() {
+    this.sendProposalUpdate('Project proposal processed', null);
+  }
+
+  sendProposalUpdate(eventName, voters) {
+    let proposal = this.state;
+    delete proposal.loggedUser;
+    delete proposal.userHasVoted;
+    if (voters) {
+      proposal.voters = voters;
+    }
+    fetch('http://127.0.0.1:3000/events', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', },
+        body: JSON.stringify({ id: '', name: eventName, payload: proposal })
+    }).then(response => response.json()).then(responseJson => {
+        if (responseJson.id) {
+          switch(eventName) {
+            case 'Project proposal voted':
+              alert('Voted on proposal');
+              break;
+            case 'Project proposal processed':
+              alert('Proposal processed');
+              break;
+          }
+        } else {
+            alert('Error processing proposal');
+        }
+    });
   }
 
   render() {
@@ -177,13 +255,13 @@ class ProposalDetail extends React.Component {
 
                 <Grid columns="equal" centered>
                   <Grid.Column textAlign="center" mobile={16} tablet={5} computer={5} >
-                    <Button className="btn" color='grey' >Vote No</Button>
+                    <Button className="btn" color='grey' disabled={this.state.userHasVoted} onClick={this.handleNo}>Vote No</Button>
                   </Grid.Column>
                   <Grid.Column textAlign="center" mobile={16} tablet={5} computer={5} >
-                    <Button className="btn" color='grey' >Vote Yes</Button>
+                    <Button className="btn" color='grey' disabled={this.state.userHasVoted} onClick={this.handleYes}>Vote Yes</Button>
                   </Grid.Column>
                   <Grid.Column textAlign="center" mobile={16} tablet={5} computer={5} >
-                    <Button className="btn" color='grey' >Process Proposal</Button>
+                    <Button className="btn" color='grey' onClick={this.handleProcess}>Process Proposal</Button>
                   </Grid.Column>
                 </Grid>
 
@@ -192,7 +270,7 @@ class ProposalDetail extends React.Component {
           </Segment>
         </Grid>
       </div>
-    )
+    );
   }
 }
 

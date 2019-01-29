@@ -53,7 +53,6 @@ export default class MembershipProposalSubmission extends Component {
             shares: 0,
             tribute: 0, // TODO: this will be calculated with the blockchain
             assets: [],
-            votes: [],
             formErrors: { title: '', description: '', assets: '', shares: '' },
             titleValid: false,
             descriptionValid: false,
@@ -166,19 +165,26 @@ export default class MembershipProposalSubmission extends Component {
 
     handleSubmit() {
         let self = this;
+        var membership = {
+            address: this.state.address,
+            nonce: this.state.nonce,
+            title: this.state.title,
+            description: this.state.description,
+            shares: this.state.shares,
+            tribute: this.state.tribute,
+            assets: this.state.assets
+        }
       
         if (this.state.formValid) {
-            fetch('http://127.0.0.1:3000/members/' + JSON.parse(localStorage.getItem("loggedUser")).address, {
-                method: 'PATCH',
+            fetch('http://127.0.0.1:3000/events', {
+                method: 'POST',
                 headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', },
-                body: JSON.stringify(this.state)
+                body: JSON.stringify({ id: '', name: 'Membership proposal', payload: membership })
             }).then(response => response.json()).then(responseJson => {
-                if (responseJson.address) {
-                    console.log('Proposal submitted');
+                if (responseJson.id) {
                     self.props.history.push('/members');
                 } else {
-                    console.log(this.state);
-                    console.log('Error processing proposal');
+                    alert('Error processing proposal');
                 }
             });
         } else {
