@@ -80,7 +80,7 @@ const MemberAvatar = ({ name, shares }) => (
   </Grid.Column>
 );
 
-export default class ProposalDetail extends Component {
+class ProposalDetail extends Component {
   constructor(props) {
     super(props);
 
@@ -96,7 +96,8 @@ export default class ProposalDetail extends Component {
   
   componentDidMount() {
     // Retrieve the data of the proposal.
-    this.props.fetchProposalDetail(this.props.match.params.id).then(response => response.json()).then(responseJson => {
+    this.props.fetchProposalDetail(this.props.match.params.id);
+    /*.then(response => response.json()).then(responseJson => {
       if (responseJson.id) {
         // Store the proposal data on the state.
         this.setState(responseJson);
@@ -109,6 +110,7 @@ export default class ProposalDetail extends Component {
         alert('Error retrieving the proposal.');
       }
     });
+    */
   }
 
   handleNo() {
