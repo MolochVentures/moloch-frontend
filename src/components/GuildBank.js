@@ -75,11 +75,12 @@ const currencies = [
   }
 ];
 
-const CurrencyElement = ({ name, shares, icon }) => (
-  <Grid.Column width={3} textAlign="center" className="currency_element">
+const CurrencyElement = ({ name, shares, icon, value }) => (
+  <Grid.Column mobile={5} tablet={3} computer={3} textAlign="center" className="currency_element" >
     <Image src={icon} centered size='tiny' circular/>
     <p className="name">{name}</p>
-    <p className="subtext">{shares} shares</p>
+    <p className="shares">{shares}</p>
+    <p className="subtext">{'$' + value}</p>
   </Grid.Column>
 );
 

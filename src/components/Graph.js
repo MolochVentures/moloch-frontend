@@ -2,6 +2,23 @@ import React, { Component } from 'react';
 import { ResponsiveLine } from '@nivo/line';
 
 export default class Graph extends Component {
+  
+    constructor(props) {
+      super(props);
+      this.state = {
+        hideBottom: false
+      }
+    }
+    componentDidMount() {
+      window.addEventListener("resize", this.resize.bind(this));
+      this.resize();
+    }
+    resize() {
+      let currentHideBottom = (window.innerWidth <= 760);
+      if (currentHideBottom !== this.state.hideBottom) {
+          this.setState({hideBottom: currentHideBottom});
+      }
+    }
     render() {
         const data = [
             {
@@ -9,7 +26,7 @@ export default class Graph extends Component {
               "data": [
                 {
                   "x": "Jan",
-                  "y": 20
+                  "y": 20,
                 },
                 {
                   "x": "Feb",
@@ -50,7 +67,7 @@ export default class Graph extends Component {
                 {
                   "x": "Dec",
                   "y": 190
-                }
+                },
               ]
             }
           ];
@@ -62,9 +79,9 @@ export default class Graph extends Component {
                 enableGridX={false}
                 margin={{
                     "top": 50,
-                    "right": 110,
+                    "right": 30,
                     "bottom": 50,
-                    "left": 60
+                    "left": 40
                 }}
                 xScale={{
                     "type": "point"
@@ -78,11 +95,12 @@ export default class Graph extends Component {
                 lineWidth={3}
                 axisTop={null}
                 axisRight={null}
-                axisBottom={{
+                axisBottom={ this.state.hideBottom ? null : {
                     "orient": "bottom",
                     "tickSize": 0,
                     "tickPadding": 5,
-                    "tickRotation": 0
+                    "tickRotation": 0,
+                    // tickValues: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'Aug', 'Sep', 'Oct', 'Nov','Dec']
                 }}
                 axisLeft={{
                     "orient": "left",
@@ -94,6 +112,7 @@ export default class Graph extends Component {
                 motionStiffness={90}
                 motionDamping={15}
                 theme={{
+                    tooltip: {container: {color: 'rgba(0,0,0,0.5)'}},
                     axis: {
                       ticks: {
                         text: {

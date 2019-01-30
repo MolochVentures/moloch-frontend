@@ -6,22 +6,22 @@ import Graph from './Graph';
 export default () => (
   <div id="homepage">
     <Grid columns={16} verticalAlign="middle">
-
-      <Grid.Column width={4} textAlign="left" className="guild_value">
+    <Grid.Column mobile={16} tablet={6} computer={4} className="guild_value" >
         <Link to='/guildbank' className="text_link">
           <p className="subtext">Guild Bank Value</p>
           <p className="amount">$53,640,918</p>
         </Link>
       </Grid.Column>
-
-      <Grid.Column width={8} textAlign="center" className="browse_buttons">
+      <Grid.Column mobile={16} tablet={10} computer={8} textAlign="center" className="browse_buttons" >
         <Link to='/members' className="link">
-          <Button size='large' color='grey'>57 Members</Button>
+          <Button size='large' color='grey' className='btn_link'>57 Members</Button>
         </Link>
         <Link to='/proposals' className="link">
-          <Button size='large' color='grey'>13 Proposals</Button>
+          <Button size='large' color='grey' className='btn_link'>13 Proposals</Button>
         </Link>
       </Grid.Column>
+      
+    <Grid.Column computer={4}  />
 
       <Grid.Column width={16}>
         <Segment className="blurred box">
