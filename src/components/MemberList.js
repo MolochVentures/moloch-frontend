@@ -42,7 +42,7 @@ const MemberAvatar = ({ name, shares }) => (
   <Grid.Column mobile={5} tablet={3} computer={3} textAlign="center" className="member_avatar" title={name}  >
     <Link to={`/members/${name}`} className="uncolored">
       <Image src={hood} centered size='tiny' />
-      <p className="name">{name.length > 30 ? name.substring(0,30) + '...' : name}</p>
+      <p className="name">{ !name ? '' : (name.length > 10 ? name.substring(0, 10) + '...' : name)}</p>
       <p className="subtext">{shares} shares</p>
     </Link>
   </Grid.Column>

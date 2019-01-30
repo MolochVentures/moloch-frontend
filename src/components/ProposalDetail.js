@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import hood from 'assets/hood.png';
 
 import { connect } from 'react-redux';
-import { fetchProposalDetail, fetchMembers, postVotes } from './actions';
+import { fetchProposalDetail, fetchMembers, postEvents } from './actions';
 
 const ProgressBar = ({ yes, no }) => (
   <>
@@ -31,8 +31,8 @@ const MemberAvatar = ({ name, shares }) => (
   <Grid.Column mobile={4} tablet={3} computer={3} textAlign="center" className="member_avatar" title={name}>
     <Link to={`/members/${name}`} className="uncolored">
       <Image src={hood} centered />
-      <p className="name">{name.length > 10 ? name.substring(0, 10) + '...' : name}</p>
-      {/* <p className="subtext">{shares} shares</p> */}
+      <p className="name">{ !name ? '' : (name.length > 10 ? name.substring(0, 10) + '...' : name)}</p>
+      
     </Link>
   </Grid.Column>
 );
@@ -103,9 +103,9 @@ class ProposalDetail extends Component {
     if (voters) {
       proposal.voters = voters;
     }
-    this.props.postVotes(JSON.stringify({ id: '', name: eventName, payload: proposal }))
+    this.props.postEvents(JSON.stringify({ id: '', name: eventName, payload: proposal }))
       .then((responseJson) => {
-        if (responseJson.type === "POST_VOTES_SUCCESS") {
+        if (responseJson.type === "POST_EVENTS_SUCCESS") {
           switch (eventName) {
             case 'Project proposal voted':
               alert('Voted on proposal');
@@ -256,8 +256,8 @@ function mapDispatchToProps(dispatch) {
     fetchMembers: function () {
       dispatch(fetchMembers());
     },
-    postVotes: function (data) {
-      return dispatch(postVotes(data))
+    postEvents: function (data) {
+      return dispatch(postEvents(data))
     }
   };
 }
