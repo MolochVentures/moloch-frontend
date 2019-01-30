@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@nivo/line": "^0.52.0",
+    "moment": "^2.24.0",
     "node-sass": "^4.11.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",

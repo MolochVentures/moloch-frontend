@@ -1,6 +1,7 @@
 import React from 'react';
 import { Divider, Segment, Grid, Progress, Button } from 'semantic-ui-react';
 import { Route, Switch, Link } from "react-router-dom";
+import moment from 'moment';
 
 import ProposalDetail from "./ProposalDetail";
 import { connect } from 'react-redux';
@@ -41,9 +42,12 @@ const ProgressBar = ({ yes, no }) => (
   </>
 );
 
-const ProposalCard = ({ proposal }) => (
+const ProposalCard = ({ proposal }) => {
+  let link = proposal.shares ? 'members' : 'proposals';
+  let id = proposal.shares ? proposal.name : proposal.id;
+  return (
   <Grid.Column mobile={16} tablet={8} computer={5}>
-    <Link to={`/proposals/${proposal.id}`} className="uncolored">
+    <Link to={`/${link}/${id}`} className="uncolored">
       <Segment className="blurred box">
         <p className="name">{proposal.title}</p>
         <p className="subtext description">{proposal.description}</p>
@@ -80,7 +84,7 @@ const ProposalCard = ({ proposal }) => (
       </Segment>
     </Link>
   </Grid.Column>
-);
+) };
 
 
 const ProposalList = (props) => (
@@ -98,7 +102,7 @@ const ProposalList = (props) => (
       </Grid.Column>
     </Grid>
     
-    <Grid columns={3}>
+    <Grid columns={3} style={{height: 200}}>
       {props.proposals.map((p, idx) => <ProposalCard proposal={p} key={idx} />)}
     </Grid>
   </div>
@@ -106,7 +110,10 @@ const ProposalList = (props) => (
 
 class ProposalListView extends React.Component {
   componentDidMount() {
-    this.props.fetchProposals();
+    let proposalParams = {
+      currentDate: moment(new Date()).format('YYYY/MM/DD')
+    }
+    this.props.fetchProposals(proposalParams);
   }
   render() {
     return (
@@ -128,8 +135,8 @@ function mapStateToProps(state) {
 // This function is used to provide callbacks to container component.
 function mapDispatchToProps(dispatch) {
   return {
-    fetchProposals: function() {
-      dispatch(fetchProposals());
+    fetchProposals: function(params) {
+      dispatch(fetchProposals(params));
     }
   };
 }

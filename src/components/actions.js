@@ -33,14 +33,17 @@ export function fetchMembers() {
     }
 }
 
-export function fetchProposals() {
+export function fetchProposals(params) {
+    var queryParams = Object.keys(params)
+        .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
+        .join('&');
     // Instead of plain objects, we are returning function.
     return function (dispatch) {
         // Dispatching REQUEST action, which tells our app, that we are started requesting members.
         dispatch({
             type: 'FETCH_PROPOSALS_REQUEST'
         });
-        return fetch(url + '/projects', {
+        return fetch(url + '/periods/getfiltered?'+queryParams, {
             method: 'GET',
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', },
         })
