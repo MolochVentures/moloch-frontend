@@ -4,50 +4,7 @@ import { Link } from "react-router-dom";
 import hood from 'assets/hood.png';
 
 import { connect } from 'react-redux';
-import { fetchProposalDetail } from './actions';
-
-
-// const tributes = [
-//   {
-//     'amount': 10,
-//     'currency': 'ETH'
-//   },
-//   {
-//     'amount': 10,
-//     'currency': 'BTC'
-//   },
-//   {
-//     'amount': 11,
-//     'currency': 'LTC'
-//   }
-// ];
-
-const elders = [
-  {
-    "name": "KHJ SS501",
-    "shares": 43
-  },
-  {
-    "name": "James Corley",
-    "shares": 38
-  },
-  {
-    "name": "Carl Haling",
-    "shares": 36
-  },
-  {
-    "name": "Todd Luch",
-    "shares": 33
-  },
-  {
-    "name": "Todd Luch",
-    "shares": 33
-  },
-  {
-    "name": "Todd Luch",
-    "shares": 33
-  },
-];
+import { fetchProposalDetail, fetchMembers, postVotes } from './actions';
 
 const ProgressBar = ({ yes, no }) => (
   <>
@@ -71,10 +28,10 @@ const ProgressBar = ({ yes, no }) => (
 );
 
 const MemberAvatar = ({ name, shares }) => (
-  <Grid.Column mobile={4} tablet={3} computer={3} textAlign="center" className="member_avatar" >
+  <Grid.Column mobile={4} tablet={3} computer={3} textAlign="center" className="member_avatar" title={name}>
     <Link to={`/members/${name}`} className="uncolored">
       <Image src={hood} centered />
-      <p className="name">{name}</p>
+      <p className="name">{name.length > 10 ? name.substring(0, 10) + '...' : name}</p>
       {/* <p className="subtext">{shares} shares</p> */}
     </Link>
   </Grid.Column>
@@ -85,32 +42,32 @@ class ProposalDetail extends Component {
     super(props);
 
     this.state = {
-      loggedUser: JSON.parse(localStorage.getItem('loggedUser')).address
+      loggedUser: JSON.parse(localStorage.getItem('loggedUser')).address,
+      proposal_detail: this.props.proposal_detail,
+      limitTo: 4
     }
 
     this.handleNo = this.handleNo.bind(this);
     this.handleYes = this.handleYes.bind(this);
     this.handleProcess = this.handleProcess.bind(this);
     this.sendProposalUpdate = this.sendProposalUpdate.bind(this);
+    this.onLoadMore = this.onLoadMore.bind(this);
   }
-  
+
   componentDidMount() {
     // Retrieve the data of the proposal.
-    this.props.fetchProposalDetail(this.props.match.params.id);
-    /*.then(response => response.json()).then(responseJson => {
-      if (responseJson.id) {
-        // Store the proposal data on the state.
-        this.setState(responseJson);
-
-        // Check if the user that is currently viewing the proposal has voted before to disable the voting buttons.
-        let voters = this.state.voters ? this.state.voters : [];
-        let userHasVoted = voters.find(voter => voter.member === this.state.loggedUser) ? true : false;
-        this.setState({userHasVoted});
-      } else {
-        alert('Error retrieving the proposal.');
-      }
-    });
-    */
+    this.props.fetchProposalDetail(this.props.match.params.id)
+      .then((responseJson) => {
+        if (responseJson.type === "FETCH_PROPOSAL_DETAIL_SUCCESS") {
+          this.setState({ proposal_detail: responseJson.items });
+          let voters = this.state.proposal_detail.voters ? this.state.proposal_detail.voters : [];
+          let userHasVoted = voters.find(voter => voter.member === this.state.loggedUser) ? true : false;
+          this.setState({ userHasVoted });
+        } else {
+          alert('Error retrieving the proposal.');
+        }
+      });
+    this.props.fetchMembers();
   }
 
   handleNo() {
@@ -120,7 +77,7 @@ class ProposalDetail extends Component {
       member: JSON.parse(localStorage.getItem("loggedUser")).address,
       vote: 'no'
     });
-    this.setState({voters: voters, userHasVoted: true});
+    this.setState({ voters: voters, userHasVoted: true });
     this.sendProposalUpdate('Project proposal voted', voters);
   }
 
@@ -131,7 +88,7 @@ class ProposalDetail extends Component {
       member: JSON.parse(localStorage.getItem("loggedUser")).address,
       vote: 'yes'
     });
-    this.setState({voters: voters, userHasVoted: true});
+    this.setState({ voters: voters, userHasVoted: true });
     this.sendProposalUpdate('Project proposal voted', voters);
   }
 
@@ -146,23 +103,28 @@ class ProposalDetail extends Component {
     if (voters) {
       proposal.voters = voters;
     }
-    fetch('http://127.0.0.1:3000/events', {
-        method: 'POST',
-        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', },
-        body: JSON.stringify({ id: '', name: eventName, payload: proposal })
-    }).then(response => response.json()).then(responseJson => {
-        if (responseJson.id) {
-          switch(eventName) {
+    this.props.postVotes(JSON.stringify({ id: '', name: eventName, payload: proposal }))
+      .then((responseJson) => {
+        if (responseJson.type === "POST_VOTES_SUCCESS") {
+          switch (eventName) {
             case 'Project proposal voted':
               alert('Voted on proposal');
               break;
             case 'Project proposal processed':
               alert('Proposal processed');
               break;
+            default:
+              break;
           }
         } else {
-            alert('Error processing proposal');
+          alert('Error processing proposal');
         }
+      });
+  }
+
+  onLoadMore() {
+    this.setState({
+      limitTo: this.state.limitTo + 4
     });
   }
 
@@ -173,18 +135,18 @@ class ProposalDetail extends Component {
           <Segment className="transparent box">
             <Grid centered columns={10}  >
               <Grid.Column mobile={16} tablet={16} computer={12}  >
-                <span className="title">ETH Proposal</span>
+                <span className="title">{this.state.proposal_detail.title}</span>
               </Grid.Column>
             </Grid>
             <Grid centered columns={10}  >
               <Grid.Column mobile={16} tablet={16} computer={4}  >
                 <div className="subtext description">
-                  {this.props.proposal_detail.description}
+                  {this.state.proposal_detail.description}
                 </div>
 
                 <Grid columns="equal" className="tokens">
                   <Grid.Row>
-                    {this.props.proposal_detail.assets.map((token, idx) => (
+                    {this.state.proposal_detail.assets.map((token, idx) => (
                       <Grid.Column key={idx} className="tributes">
                         <Segment className="pill" textAlign="center">
                           <Icon name="ethereum" />{token.amount} {token.asset}
@@ -193,7 +155,7 @@ class ProposalDetail extends Component {
                     ))}
                   </Grid.Row>
                   {/* <Grid.Row>
-                    {this.props.proposal_detail.assets.map((token, idx) => (
+                    {this.state.proposal_detail.assets.map((token, idx) => (
                       <Grid.Column key={idx} mobile={16} tablet={8} computer={5} className="tributes">
                         <Segment className="pill" textAlign="center">
                           <Icon name="ethereum" />{token.amount} {token.asset}
@@ -228,7 +190,7 @@ class ProposalDetail extends Component {
                   </Grid.Column>
                   <Grid.Column textAlign="right" className="pill_column grace" mobile={16} tablet={8} computer={8}>
                     <span className="pill">
-                      <span className="subtext">Grace Period:</span>&nbsp; {this.props.proposal_detail.period}
+                      <span className="subtext">Grace Period:</span>&nbsp; {this.state.proposal_detail.period}
                     </span>
                   </Grid.Column>
                 </Grid>
@@ -238,12 +200,13 @@ class ProposalDetail extends Component {
                       <Grid>
                         <Grid.Row className="members_row" >
                           {/* centered */}
-                          {elders.map((elder, idx) => <MemberAvatar {...elder} key={idx} />)}
+                          {this.props.members.slice(0, this.state.limitTo).map((elder, idx) => <MemberAvatar {...elder} key={idx} />)}
+                          {this.state.limitTo < this.props.members.length ?
+                            <Grid.Column mobile={4} tablet={3} computer={3} textAlign="center" className="member_avatar">
+                              <Button className="caret_btn" circular icon='caret down' color='grey' onClick={this.onLoadMore} />
+                              <p className="name">...</p>
+                            </Grid.Column> : null}
 
-                          <Grid.Column mobile={4} tablet={3} computer={3} textAlign="center" className="member_avatar">
-                            <Button className="caret_btn" circular icon='caret down' color='grey' />
-                            <p className="name">...</p>
-                          </Grid.Column>
                         </Grid.Row>
                       </Grid>
                     </Grid.Column >
@@ -279,7 +242,8 @@ class ProposalDetail extends Component {
 // This function is used to convert redux global state to desired props.
 function mapStateToProps(state) {
   return {
-    proposal_detail: state.proposalDetail.items
+    proposal_detail: state.proposalDetail.items,
+    members: state.members.items,
   };
 }
 
@@ -287,7 +251,13 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     fetchProposalDetail: function (id) {
-      dispatch(fetchProposalDetail(id));
+      return dispatch(fetchProposalDetail(id));
+    },
+    fetchMembers: function () {
+      dispatch(fetchMembers());
+    },
+    postVotes: function (data) {
+      return dispatch(postVotes(data))
     }
   };
 }
