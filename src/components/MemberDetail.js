@@ -186,7 +186,7 @@ class MemberDetail extends React.Component {
 // This function is used to convert redux global state to desired props.
 function mapStateToProps(state) {
   return {
-    member_detail: state.memberDetail.items
+    member_detail: state.memberDetail.items.member
   };
 }
 

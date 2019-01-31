@@ -1,7 +1,8 @@
 const INITIAL_STATE = {
     items: {
-        assets: [],
-        proposals: []
+        member: { assets: [],
+          proposals: []
+        }
     },
     isFetching: false,
     error: undefined

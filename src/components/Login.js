@@ -34,7 +34,7 @@ class Login extends Component {
                                     })
                             }
                         } else { // If the user exists, ask for a signature.
-                            self.signWithAccessRequest(responseJson.items.nonce, responseJson.items.shares);
+                            self.signWithAccessRequest(responseJson.items.member.nonce, responseJson.items.member.shares);
                         }
                     });
             }
@@ -58,7 +58,7 @@ class Login extends Component {
                                     })
                             }
                         } else { // If the user exists, ask for a signature.
-                            self.signWithAccessRequest(responseJson.items.nonce, responseJson.items.shares);
+                            self.signWithAccessRequest(responseJson.items.member.nonce, responseJson.items.member.shares);
                         }
                     });
             }

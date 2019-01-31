@@ -87,7 +87,7 @@ class ProposalDetail extends Component {
   }
 
   loadData(responseJson) {
-    this.setState({ proposal_detail: responseJson.items });
+    this.setState({ proposal_detail: (responseJson.items.member ? responseJson.items.member : responseJson.items) });
     let voters = this.state.proposal_detail.voters ? this.state.proposal_detail.voters : [];
     let userHasVoted = voters.find(voter => voter.member === this.state.loggedUser) ? true : false;
     this.setState({ userHasVoted });
