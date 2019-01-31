@@ -25,16 +25,16 @@ class Login extends Component {
                 // Try getting a user by their public address.
                 this.props.fetchMemberDetail(address)
                     .then((responseJson) => {
-                        if (responseJson.type === 'POST_MEMBER_FAILURE') {
+                        if (responseJson.type === 'FETCH_MEMBER_DETAIL_FAILURE') {
                             if (responseJson.error && responseJson.error.statusCode === 404) { // If the user didn't exist.
                                 // Create it.
                                 this.props.postEvents(JSON.stringify({ id: '', name: 'User creation', payload: { address: address, nonce: 0 } }))
                                     .then((resJson) => {
-                                        self.signWithAccessRequest(resJson.items.nonce);
+                                        self.signWithAccessRequest(resJson.items.nonce, 0);
                                     })
                             }
                         } else { // If the user exists, ask for a signature.
-                            self.signWithAccessRequest(responseJson.items.nonce);
+                            self.signWithAccessRequest(responseJson.items.nonce, responseJson.items.shares);
                         }
                     });
             }
@@ -49,16 +49,16 @@ class Login extends Component {
                 // Try getting a user by their public address.
                 this.props.fetchMemberDetail(address)
                     .then((responseJson) => {
-                        if (responseJson.type === 'POST_MEMBER_FAILURE') {
+                        if (responseJson.type === 'FETCH_MEMBER_DETAIL_FAILURE') {
                             if (responseJson.error && responseJson.error.statusCode === 404) { // If the user didn't exist.
                                 // Create it.
                                 this.props.postEvents(JSON.stringify({ name: 'User creation', payload: { address: address, nonce: 0 } }))
                                     .then((resJson) => {
-                                        self.signWithAccessRequest(resJson.items.nonce);
+                                        self.signWithAccessRequest(resJson.items.nonce, 0);
                                     })
                             }
                         } else { // If the user exists, ask for a signature.
-                            self.signWithAccessRequest(responseJson.items.nonce);
+                            self.signWithAccessRequest(responseJson.items.nonce, responseJson.items.shares);
                         }
                     });
             }
@@ -67,7 +67,7 @@ class Login extends Component {
         }
     }
 
-    signWithAccessRequest(nonce) {
+    signWithAccessRequest(nonce, shares) {
         let web3 = window.web3;
         let ethereum = window.ethereum;
         let self = this;
@@ -89,7 +89,7 @@ class Login extends Component {
                     web3.personal.ecRecover(message, signature, function (error, result) {
                         if (!error) {
                             if (nonce) {
-                                localStorage.setItem("loggedUser", JSON.stringify({ address: result, nonce }));
+                                localStorage.setItem("loggedUser", JSON.stringify({ shares: (shares ? shares : 0), address: result, nonce }));
                                 self.props.history.push('/');
                             } else {
                                 self.loginWithMetamask();

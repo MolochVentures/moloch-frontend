@@ -7,7 +7,7 @@ import bull from 'assets/bull.png';
 import hood from 'assets/hood.png';
 
 import { connect } from 'react-redux';
-import { fetchMembers } from './actions';
+import { fetchMembers, fetchConfigFounders } from './actions';
 
 const user = {
   "name": "Malcom Jans",
@@ -78,7 +78,7 @@ const MemberList = (props) => (
       </Grid.Row>
       <Divider />
       <Grid.Row className="members_row" centered>
-        {props.members.map((elder, idx) => <MemberAvatar {...elder} key={idx} />)}
+        {props.elders.map((elder, idx) => <MemberAvatar {...elder} key={idx} />)}
       </Grid.Row>
     </Grid>
     <Grid className="member_item">
@@ -96,12 +96,13 @@ const MemberList = (props) => (
 class MemberListView extends React.Component {
   componentDidMount() {
     this.props.fetchMembers();
+    this.props.fetchConfigFounders();
   }
   render() {
     return (
       <Switch>
         
-        <Route exact path="/members" render={(props) => <MemberList  members={this.props.members} /> } />
+        <Route exact path="/members" render={(props) => <MemberList  members={this.props.members}  elders={this.props.elders} /> } />
         <Route path="/members/:name" component={MemberDetail} />
       </Switch>
     )
@@ -111,7 +112,8 @@ class MemberListView extends React.Component {
 // This function is used to convert redux global state to desired props.
 function mapStateToProps(state) {
   return {
-    members: state.members.items
+    members: state.members.items,
+    elders: state.founders.items
   };
 }
 
@@ -120,6 +122,9 @@ function mapDispatchToProps(dispatch) {
   return {
     fetchMembers: function() {
       dispatch(fetchMembers());
+    },
+    fetchConfigFounders: function (){
+      dispatch(fetchConfigFounders());
     }
   };
 }

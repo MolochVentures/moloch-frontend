@@ -43,11 +43,11 @@ const ProgressBar = ({ yes, no }) => (
 );
 
 const ProposalCard = ({ proposal }) => {
-  let link = proposal.shares ? 'members' : 'proposals';
+  let type = proposal.address ? 'members' : 'projects';
   let id = proposal.shares ? proposal.name : proposal.id;
   return (
   <Grid.Column mobile={16} tablet={8} computer={5}>
-    <Link to={`/${link}/${id}`} className="uncolored">
+    <Link to={`/proposals/${type}/${id}`} className="uncolored">
       <Segment className="blurred box">
         <p className="name">{proposal.title}</p>
         <p className="subtext description">{proposal.description}</p>
@@ -119,7 +119,7 @@ class ProposalListView extends React.Component {
     return (
       <Switch>
         <Route exact path="/proposals" render={(props) => <ProposalList  proposals={this.props.proposals} /> } />
-        <Route path="/proposals/:id" component={ProposalDetail} />
+        <Route path="/proposals/:type/:id" component={ProposalDetail} />
       </Switch>
     )
   }

@@ -4,26 +4,26 @@ import { Link } from "react-router-dom";
 import hood from 'assets/hood.png';
 
 import { connect } from 'react-redux';
-import { fetchProposalDetail, fetchMembers, postEvents } from './actions';
+import { fetchProposalDetail, fetchMembers, postEvents, fetchMemberDetail } from './actions';
 
 const ProgressBar = ({ yes, no }) => (
   <>
-    <div style={{ "position": "relative" }}>
-      <Progress percent={yes + no} color="red" size="big" style={{
-        "position": "absolute",
-        "top": "0",
-        "width": "100%"
-      }} />
-      <Progress percent={yes} color="green" size="big" />
-    </div>
-    <Grid columns="equal">
-      <Grid.Column floated="left">
-        {yes}% Yes
+  <div style={{ "position": "relative" }}>
+    <Progress percent={yes + no} color="red" size="big" style={{
+      "position": "absolute",
+      "top": "0",
+      "width": "100%"
+    }} />
+    <Progress percent={yes} color="green" size="big" />
+  </div>
+  <Grid columns="equal">
+    <Grid.Column floated="left">
+      {yes}% Yes
       </Grid.Column>
-      <Grid.Column floated="right" textAlign="right">
-        {no}% No
+    <Grid.Column floated="right" textAlign="right">
+      {no}% No
       </Grid.Column>
-    </Grid>
+  </Grid>
   </>
 );
 
@@ -31,8 +31,8 @@ const MemberAvatar = ({ name, shares }) => (
   <Grid.Column mobile={4} tablet={3} computer={3} textAlign="center" className="member_avatar" title={name}>
     <Link to={`/members/${name}`} className="uncolored">
       <Image src={hood} centered />
-      <p className="name">{ !name ? '' : (name.length > 10 ? name.substring(0, 10) + '...' : name)}</p>
-      
+      <p className="name">{!name ? '' : (name.length > 10 ? name.substring(0, 10) + '...' : name)}</p>
+
     </Link>
   </Grid.Column>
 );
@@ -44,7 +44,8 @@ class ProposalDetail extends Component {
     this.state = {
       loggedUser: JSON.parse(localStorage.getItem('loggedUser')).address,
       proposal_detail: this.props.proposal_detail,
-      limitTo: 4
+      limitTo: 4,
+      type: '' //membership or project
     }
 
     this.handleNo = this.handleNo.bind(this);
@@ -56,18 +57,40 @@ class ProposalDetail extends Component {
 
   componentDidMount() {
     // Retrieve the data of the proposal.
-    this.props.fetchProposalDetail(this.props.match.params.id)
-      .then((responseJson) => {
-        if (responseJson.type === "FETCH_PROPOSAL_DETAIL_SUCCESS") {
-          this.setState({ proposal_detail: responseJson.items });
-          let voters = this.state.proposal_detail.voters ? this.state.proposal_detail.voters : [];
-          let userHasVoted = voters.find(voter => voter.member === this.state.loggedUser) ? true : false;
-          this.setState({ userHasVoted });
-        } else {
-          alert('Error retrieving the proposal.');
-        }
-      });
+    let id = this.props.match.params.id
+    this.setState({ type: this.props.match.params.type });
+    switch (this.props.match.params.type) {
+      case 'members':
+        this.props.fetchMemberDetail(id)
+          .then((responseJson) => {
+            if (responseJson.type === "FETCH_MEMBER_DETAIL_SUCCESS") {
+              this.loadData(responseJson);
+            } else {
+              alert('Error retrieving the proposal.');
+            }
+          });
+        break;
+      case 'projects':
+        this.props.fetchProposalDetail(id)
+          .then((responseJson) => {
+            if (responseJson.type === "FETCH_PROPOSAL_DETAIL_SUCCESS") {
+              this.loadData(responseJson);
+            } else {
+              alert('Error retrieving the proposal.');
+            }
+          });
+        break;
+      default:
+        break;
+    }
     this.props.fetchMembers();
+  }
+
+  loadData(responseJson) {
+    this.setState({ proposal_detail: responseJson.items });
+    let voters = this.state.proposal_detail.voters ? this.state.proposal_detail.voters : [];
+    let userHasVoted = voters.find(voter => voter.member === this.state.loggedUser) ? true : false;
+    this.setState({ userHasVoted });
   }
 
   handleNo() {
@@ -78,7 +101,8 @@ class ProposalDetail extends Component {
       vote: 'no'
     });
     this.setState({ voters: voters, userHasVoted: true });
-    this.sendProposalUpdate('Project proposal voted', voters);
+    let name = (this.state.type === 'members') ? 'Membership proposal voted' : 'Project proposal voted';
+    this.sendProposalUpdate(name, voters);
   }
 
   handleYes() {
@@ -89,11 +113,13 @@ class ProposalDetail extends Component {
       vote: 'yes'
     });
     this.setState({ voters: voters, userHasVoted: true });
-    this.sendProposalUpdate('Project proposal voted', voters);
+    let name = (this.state.type === 'members') ? 'Membership proposal voted' : 'Project proposal voted';
+    this.sendProposalUpdate(name, voters);
   }
 
   handleProcess() {
-    this.sendProposalUpdate('Project proposal processed', null);
+    let name = (this.state.type === 'members') ? 'Membership proposal processed' : 'Project proposal processed';
+    this.sendProposalUpdate(name, null);
   }
 
   sendProposalUpdate(eventName, voters) {
@@ -108,9 +134,11 @@ class ProposalDetail extends Component {
         if (responseJson.type === "POST_EVENTS_SUCCESS") {
           switch (eventName) {
             case 'Project proposal voted':
+            case 'Membership proposal voted':
               alert('Voted on proposal');
               break;
             case 'Project proposal processed':
+            case 'Membership proposal processed':
               alert('Proposal processed');
               break;
             default:
@@ -255,6 +283,9 @@ function mapDispatchToProps(dispatch) {
     },
     fetchMembers: function () {
       dispatch(fetchMembers());
+    },
+    fetchMemberDetail: function (id) {
+      return dispatch(fetchMemberDetail(id));
     },
     postEvents: function (data) {
       return dispatch(postEvents(data))
