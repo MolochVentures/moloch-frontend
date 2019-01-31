@@ -45,7 +45,11 @@ class ProposalDetail extends Component {
       loggedUser: JSON.parse(localStorage.getItem('loggedUser')).address,
       proposal_detail: this.props.proposal_detail,
       limitTo: 4,
-      type: '' //membership or project
+      type: '', //membership or project
+      userShare: 0,
+      totalShares: 0,
+      votedYes: 0,
+      votedNo: 0
     }
 
     this.handleNo = this.handleNo.bind(this);
@@ -53,9 +57,18 @@ class ProposalDetail extends Component {
     this.handleProcess = this.handleProcess.bind(this);
     this.sendProposalUpdate = this.sendProposalUpdate.bind(this);
     this.onLoadMore = this.onLoadMore.bind(this);
+    this.calculateVote = this.calculateVote.bind(this);
   }
 
   componentDidMount() {
+    // get loggedin user details
+    this.props.fetchMemberDetail(this.state.loggedUser)
+      .then((responseJson) => {
+        this.setState({ 
+          userShare: (responseJson.items.member.shares) ? responseJson.items.member.shares : 0, 
+          totalShares: responseJson.items.totalShares });
+
+      })
     // Retrieve the data of the proposal.
     let id = this.props.match.params.id
     this.setState({ type: this.props.match.params.type });
@@ -89,30 +102,53 @@ class ProposalDetail extends Component {
   loadData(responseJson) {
     this.setState({ proposal_detail: (responseJson.items.member ? responseJson.items.member : responseJson.items) });
     let voters = this.state.proposal_detail.voters ? this.state.proposal_detail.voters : [];
-    let userHasVoted = voters.find(voter => voter.member === this.state.loggedUser) ? true : false;
+    let userHasVoted = voters.find(voter => voter.address === this.state.loggedUser) ? true : false;
     this.setState({ userHasVoted });
+    this.calculateVote(voters);
+  }
+
+  calculateVote(voters) {
+    // calculate votes
+    let totalNumberVotedYes = 0;
+    let totalNumberVotedNo = 0;
+    voters.map((voter, idx) => {
+      if (voter.shares) {
+        switch (voter.vote) {
+          case 'yes':
+            totalNumberVotedYes += voter.shares;
+            break;
+          case 'no':
+            totalNumberVotedNo += voter.shares;
+            break;
+          default: break;
+        }
+      }
+    });
+    this.setState({ 
+      votedYes: (parseInt((totalNumberVotedYes / this.state.totalShares) * 100)), 
+      votedNo: parseInt(((totalNumberVotedNo / this.state.totalShares) * 100)) });
   }
 
   handleNo() {
     // Add the voter to the voters of the proposal.
-    let voters = this.state.voters ? this.state.voters : [];
-    voters.push({
-      member: JSON.parse(localStorage.getItem("loggedUser")).address,
-      vote: 'no'
-    });
-    this.setState({ voters: voters, userHasVoted: true });
+    let voters = {
+      address: JSON.parse(localStorage.getItem("loggedUser")).address,
+      vote: 'no',
+      shares: this.state.userShare
+    };
+    this.setState({ userHasVoted: true });
     let name = (this.state.type === 'members') ? 'Membership proposal voted' : 'Project proposal voted';
     this.sendProposalUpdate(name, voters);
   }
 
   handleYes() {
     // Add the voter to the voters of the proposal.
-    let voters = this.state.voters ? this.state.voters : [];
-    voters.push({
-      member: JSON.parse(localStorage.getItem("loggedUser")).address,
-      vote: 'yes'
-    });
-    this.setState({ voters: voters, userHasVoted: true });
+    let voters = {
+      address: JSON.parse(localStorage.getItem("loggedUser")).address,
+      vote: 'yes',
+      shares: this.state.userShare
+    };
+    this.setState({ userHasVoted: true });
     let name = (this.state.type === 'members') ? 'Membership proposal voted' : 'Project proposal voted';
     this.sendProposalUpdate(name, voters);
   }
@@ -122,16 +158,17 @@ class ProposalDetail extends Component {
     this.sendProposalUpdate(name, null);
   }
 
-  sendProposalUpdate(eventName, voters) {
-    let proposal = this.state;
-    delete proposal.loggedUser;
-    delete proposal.userHasVoted;
-    if (voters) {
-      proposal.voters = voters;
+  sendProposalUpdate(eventName, voter) {
+    let proposal = this.state.proposal_detail;
+    if (voter) {
+      proposal.voters.push(voter);
     }
+    let self = this;
+    let voters = this.state.proposal_detail.voters ? this.state.proposal_detail.voters : [];
     this.props.postEvents(JSON.stringify({ id: '', name: eventName, payload: proposal }))
       .then((responseJson) => {
         if (responseJson.type === "POST_EVENTS_SUCCESS") {
+          self.calculateVote(proposal.voters);
           switch (eventName) {
             case 'Project proposal voted':
             case 'Membership proposal voted':
@@ -242,21 +279,21 @@ class ProposalDetail extends Component {
                 </Grid>
                 <Grid>
                   <Grid.Column>
-                    <ProgressBar yes={30} no={18}></ProgressBar>
+                    <ProgressBar yes={this.state.votedYes} no={this.state.votedNo}></ProgressBar>
                   </Grid.Column>
                 </Grid>
-
-                <Grid columns="equal" centered>
-                  <Grid.Column textAlign="center" mobile={16} tablet={5} computer={5} >
-                    <Button className="btn" color='grey' disabled={this.state.userHasVoted} onClick={this.handleNo}>Vote No</Button>
-                  </Grid.Column>
-                  <Grid.Column textAlign="center" mobile={16} tablet={5} computer={5} >
-                    <Button className="btn" color='grey' disabled={this.state.userHasVoted} onClick={this.handleYes}>Vote Yes</Button>
-                  </Grid.Column>
-                  <Grid.Column textAlign="center" mobile={16} tablet={5} computer={5} >
-                    <Button className="btn" color='grey' onClick={this.handleProcess}>Process Proposal</Button>
-                  </Grid.Column>
-                </Grid>
+                {this.state.userShare ?
+                  <Grid columns="equal" centered>
+                    <Grid.Column textAlign="center" mobile={16} tablet={5} computer={5} >
+                      <Button className="btn" color='grey' disabled={this.state.userHasVoted} onClick={this.handleNo}>Vote No</Button>
+                    </Grid.Column>
+                    <Grid.Column textAlign="center" mobile={16} tablet={5} computer={5} >
+                      <Button className="btn" color='grey' disabled={this.state.userHasVoted} onClick={this.handleYes}>Vote Yes</Button>
+                    </Grid.Column>
+                    <Grid.Column textAlign="center" mobile={16} tablet={5} computer={5} >
+                      <Button className="btn" color='grey' onClick={this.handleProcess} disabled={(this.state.votedYes > 50) ? false : true}>Process Proposal</Button>
+                    </Grid.Column>
+                  </Grid> : null}
 
               </Grid.Column>
             </Grid>
