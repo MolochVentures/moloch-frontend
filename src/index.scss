@@ -141,6 +141,13 @@ body {
   margin: 30px 50px;
 }
 
+#login {
+  display: flex;
+  justify-content: center;
+  height: 70vh;
+  align-items: center;
+}
+
 #homepage {
   .guild_value {
     .amount {

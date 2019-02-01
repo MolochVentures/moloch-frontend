@@ -136,8 +136,8 @@ class Login extends Component {
     render() {
         return (
             <div id="login">
-                <Grid columns={15} centered>
-                    <Grid.Column style={{ "marginTop": "25vh", "marginLeft": "-40px" }}>
+                <Grid columns={16} centered>
+                    <Grid.Column width={16}>
                         <Button size='large' color='grey' onClick={this.loginWithMetamask}>Login</Button>
                     </Grid.Column>
                 </Grid>
