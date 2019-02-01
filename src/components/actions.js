@@ -18,13 +18,13 @@ export function fetchMembers() {
         .then(({ response, body }) => {
             if (!response.ok) {
                 // If request was failed, dispatching FAILURE action.
-                dispatch({
+                return dispatch({
                     type: 'FETCH_MEMBERS_FAILURE',
                     error: body.error
                 });
             } else {
                 // When everything is ok, dispatching SUCCESS action.
-                dispatch({
+                return dispatch({
                     type: 'FETCH_MEMBERS_SUCCESS',
                     items: body
                 });
@@ -53,13 +53,13 @@ export function fetchProposals(params) {
         .then(({ response, body }) => {
             if (!response.ok) {
                 // If request was failed, dispatching FAILURE action.
-                dispatch({
+                return dispatch({
                     type: 'FETCH_PROPOSALS_FAILURE',
                     error: body.error
                 });
             } else {
                 // When everything is ok, dispatching SUCCESS action.
-                dispatch({
+                return dispatch({
                     type: 'FETCH_PROPOSALS_SUCCESS',
                     items: body
                 });
@@ -159,6 +159,38 @@ export function postEvents(data) {
                 // When everything is ok, dispatching SUCCESS action.
                 return dispatch({
                     type: 'POST_EVENTS_SUCCESS',
+                    items: body
+                });
+            }
+        });
+    }
+}
+
+export function fetchConfigFounders() {
+    // Instead of plain objects, we are returning function.
+    return function (dispatch) {
+        // Dispatching REQUEST action, which tells our app, that we are started requesting members.
+        dispatch({
+            type: 'FETCH_FOUNDERS_REQUEST'
+        });
+        return fetch(url + '/configs/getfounders', {
+            method: 'GET',
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', },
+        })
+        // Here, we are getting json body(in our case it will contain `members` or `error` prop, depending on request was failed or not) from server response
+        // And providing `response` and `body` variables to the next chain.
+        .then(response => response.json().then(body => ({ response, body })))
+        .then(({ response, body }) => {
+            if (!response.ok) {
+                // If request was failed, dispatching FAILURE action.
+                return dispatch({
+                    type: 'FETCH_FOUNDERS_FAILURE',
+                    error: body.error
+                });
+            } else {
+                // When everything is ok, dispatching SUCCESS action.
+                return dispatch({
+                    type: 'FETCH_FOUNDERS_SUCCESS',
                     items: body
                 });
             }

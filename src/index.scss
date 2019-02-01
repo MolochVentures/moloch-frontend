@@ -75,6 +75,7 @@ body {
     width: 100%;
     z-index: -2;
     background: url("assets/moloch_owl.jpg") 0 / cover fixed;
+    background-repeat: repeat !important;
     filter: blur(12px);
   }
 
@@ -138,6 +139,13 @@ body {
 
 #wrapper {
   margin: 30px 50px;
+}
+
+#login {
+  display: flex;
+  justify-content: center;
+  height: 70vh;
+  align-items: center;
 }
 
 #homepage {
@@ -421,6 +429,11 @@ body {
   }
   .description {
     text-align: justify !important;
+    min-height: 25vh;
+  }
+
+  .member_list {
+    min-height: 25vh;
   }
   
   .member_avatar {
@@ -439,6 +452,10 @@ body {
   .pill_column {
     padding-left: 0px !important;
     padding-right: 0px !important;
+  }
+
+  .segment {
+    min-width: 100% !important;
   }
   
   @media screen and (min-width: 320px) and (max-width: 375px) { 

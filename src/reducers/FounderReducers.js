@@ -1,27 +1,23 @@
 const INITIAL_STATE = {
-    items: {
-        member: { assets: [],
-          proposals: []
-        }
-    },
+    items: [],
     isFetching: false,
     error: undefined
   };
   
-  function MemberDetailReducers(state = INITIAL_STATE, action) {
+  function FounderReducers(state = INITIAL_STATE, action) {
     switch (action.type) {
-      case 'FETCH_MEMBER_DETAIL_REQUEST':
+      case 'FETCH_FOUNDERS_REQUEST':
         // This time, you may want to display loader in the UI.
         return Object.assign({}, state, {
-          isFetching: true,
+          isFetching: true
         });
-      case 'FETCH_MEMBER_DETAIL_SUCCESS':
+      case 'FETCH_FOUNDERS_SUCCESS':
         // Adding derived members to state
         return Object.assign({}, state, {
           isFetching: false,
           items: action.items
         });
-      case 'FETCH_MEMBER_DETAIL_FAILURE':
+      case 'FETCH_FOUNDERS_FAILURE':
         // Providing error message to state, to be able display it in UI.
         return Object.assign({}, state, {
           isFetching: false,
@@ -32,4 +28,4 @@ const INITIAL_STATE = {
     }
   }
   
-  export default MemberDetailReducers;
+  export default FounderReducers;

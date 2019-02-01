@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import hood from 'assets/hood.png';
 
 import { connect } from 'react-redux';
-import { fetchProposalDetail, fetchMembers, postEvents } from './actions';
+import { fetchProposalDetail, fetchMembers, postEvents, fetchMemberDetail } from './actions';
 
 const ProgressBar = ({ yes, no }) => (
   <>
@@ -31,8 +31,8 @@ const MemberAvatar = ({ name, shares }) => (
   <Grid.Column mobile={4} tablet={3} computer={3} textAlign="center" className="member_avatar" title={name}>
     <Link to={`/members/${name}`} className="uncolored">
       <Image src={hood} centered />
-      <p className="name">{ !name ? '' : (name.length > 10 ? name.substring(0, 10) + '...' : name)}</p>
-      
+      <p className="name">{!name ? '' : (name.length > 10 ? name.substring(0, 10) + '...' : name)}</p>
+
     </Link>
   </Grid.Column>
 );
@@ -44,7 +44,13 @@ class ProposalDetail extends Component {
     this.state = {
       loggedUser: JSON.parse(localStorage.getItem('loggedUser')).address,
       proposal_detail: this.props.proposal_detail,
-      limitTo: 4
+      limitTo: 4,
+      type: '', //membership or project
+      userShare: 0,
+      totalShares: 0,
+      votedYes: 0,
+      votedNo: 0,
+      isAccepted: false
     }
 
     this.handleNo = this.handleNo.bind(this);
@@ -52,65 +58,134 @@ class ProposalDetail extends Component {
     this.handleProcess = this.handleProcess.bind(this);
     this.sendProposalUpdate = this.sendProposalUpdate.bind(this);
     this.onLoadMore = this.onLoadMore.bind(this);
+    this.calculateVote = this.calculateVote.bind(this);
   }
 
   componentDidMount() {
-    // Retrieve the data of the proposal.
-    this.props.fetchProposalDetail(this.props.match.params.id)
+    // get loggedin user details
+    this.props.fetchMemberDetail(this.state.loggedUser)
       .then((responseJson) => {
-        if (responseJson.type === "FETCH_PROPOSAL_DETAIL_SUCCESS") {
-          this.setState({ proposal_detail: responseJson.items });
-          let voters = this.state.proposal_detail.voters ? this.state.proposal_detail.voters : [];
-          let userHasVoted = voters.find(voter => voter.member === this.state.loggedUser) ? true : false;
-          this.setState({ userHasVoted });
-        } else {
-          alert('Error retrieving the proposal.');
+        this.setState({
+          userShare: (responseJson.items.member.shares) ? responseJson.items.member.shares : 0,
+          totalShares: responseJson.items.totalShares
+        });
+
+      })
+    // Retrieve the data of the proposal.
+    let id = this.props.match.params.id
+    this.setState({ type: this.props.match.params.type });
+    switch (this.props.match.params.type) {
+      case 'members':
+        this.props.fetchMemberDetail(id)
+          .then((responseJson) => {
+            if (responseJson.type === "FETCH_MEMBER_DETAIL_SUCCESS") {
+              this.loadData(responseJson);
+            } else {
+              alert('Error retrieving the proposal.');
+            }
+          });
+        break;
+      case 'projects':
+        this.props.fetchProposalDetail(id)
+          .then((responseJson) => {
+            if (responseJson.type === "FETCH_PROPOSAL_DETAIL_SUCCESS") {
+              this.loadData(responseJson);
+            } else {
+              alert('Error retrieving the proposal.');
+            }
+          });
+        break;
+      default:
+        break;
+    }
+    this.props.fetchMembers();
+  }
+
+  loadData(responseJson) {
+    this.setState({ proposal_detail: (responseJson.items.member ? responseJson.items.member : responseJson.items), isAccepted : (responseJson.items.status === 'accepted' ? true : false)});
+    let voters = this.state.proposal_detail.voters ? this.state.proposal_detail.voters : [];
+    let userHasVoted = voters.find(voter => voter.member === this.state.loggedUser) ? true : false;
+    this.setState({ userHasVoted });
+    this.calculateVote(voters);
+  }
+
+  calculateVote(voters) {
+    // calculate votes
+    let totalNumberVotedYes = 0;
+    let totalNumberVotedNo = 0;
+    if (voters) {
+      voters.map((voter, idx) => {
+        if (voter.shares) {
+          switch (voter.vote) {
+            case 'yes':
+              totalNumberVotedYes += voter.shares;
+              break;
+            case 'no':
+              totalNumberVotedNo += voter.shares;
+              break;
+            default: break;
+          }
         }
       });
-    this.props.fetchMembers();
+      let percentYes = typeof ((parseInt((totalNumberVotedYes / this.state.totalShares) * 100))) !== 'number' ? 0 : (parseInt((totalNumberVotedYes / this.state.totalShares) * 100));
+      let percentNo = typeof (parseInt(((totalNumberVotedNo / this.state.totalShares) * 100))) !== 'number' ? 0 : parseInt(((totalNumberVotedNo / this.state.totalShares) * 100));
+      this.setState({
+        votedYes: percentYes,
+        votedNo: percentNo
+      });
+    }
   }
 
   handleNo() {
     // Add the voter to the voters of the proposal.
-    let voters = this.state.voters ? this.state.voters : [];
-    voters.push({
+    let voters = {
       member: JSON.parse(localStorage.getItem("loggedUser")).address,
-      vote: 'no'
-    });
-    this.setState({ voters: voters, userHasVoted: true });
-    this.sendProposalUpdate('Project proposal voted', voters);
+      vote: 'no',
+      shares: this.state.userShare
+    };
+    this.setState({ userHasVoted: true });
+    let name = (this.state.type === 'members') ? 'Membership proposal voted' : 'Project proposal voted';
+    this.sendProposalUpdate(name, voters);
   }
 
   handleYes() {
     // Add the voter to the voters of the proposal.
-    let voters = this.state.voters ? this.state.voters : [];
-    voters.push({
+    let voters = {
       member: JSON.parse(localStorage.getItem("loggedUser")).address,
-      vote: 'yes'
-    });
-    this.setState({ voters: voters, userHasVoted: true });
-    this.sendProposalUpdate('Project proposal voted', voters);
+      vote: 'yes',
+      shares: this.state.userShare
+    };
+    this.setState({ userHasVoted: true });
+    let name = (this.state.type === 'members') ? 'Membership proposal voted' : 'Project proposal voted';
+    this.sendProposalUpdate(name, voters);
   }
 
   handleProcess() {
-    this.sendProposalUpdate('Project proposal processed', null);
+    let name = (this.state.type === 'members') ? 'Membership proposal processed' : 'Project proposal processed';
+    this.sendProposalUpdate(name, null);
   }
 
-  sendProposalUpdate(eventName, voters) {
-    let proposal = this.state;
-    delete proposal.loggedUser;
-    delete proposal.userHasVoted;
-    if (voters) {
-      proposal.voters = voters;
+  sendProposalUpdate(eventName, voter) {
+    let proposal = this.state.proposal_detail;
+    if (!proposal.voters) {
+      proposal.voters = [];
     }
+    if (voter) {
+      proposal.voters.push(voter);
+    }
+    let self = this;
     this.props.postEvents(JSON.stringify({ id: '', name: eventName, payload: proposal }))
       .then((responseJson) => {
         if (responseJson.type === "POST_EVENTS_SUCCESS") {
+          self.calculateVote(proposal.voters);
+          self.setState({isAccepted : (responseJson.items.payload.status === 'accepted' ? true : false )});
           switch (eventName) {
             case 'Project proposal voted':
+            case 'Membership proposal voted':
               alert('Voted on proposal');
               break;
             case 'Project proposal processed':
+            case 'Membership proposal processed':
               alert('Proposal processed');
               break;
             default:
@@ -131,14 +206,14 @@ class ProposalDetail extends Component {
   render() {
     return (
       <div id="proposal_detail">
-        <Grid centered columns={12}>
-          <Segment className="transparent box">
-            <Grid centered columns={10}  >
+        <Grid centered columns={16}>
+          <Segment className="transparent box segment" textAlign='center'>
+            <Grid centered columns={14}  >
               <Grid.Column mobile={16} tablet={16} computer={12}  >
                 <span className="title">{this.state.proposal_detail.title}</span>
               </Grid.Column>
             </Grid>
-            <Grid centered columns={10}  >
+            <Grid centered columns={14}  >
               <Grid.Column mobile={16} tablet={16} computer={4}  >
                 <div className="subtext description">
                   {this.state.proposal_detail.description}
@@ -170,7 +245,7 @@ class ProposalDetail extends Component {
                     <p className="amount">$6,000</p>
                   </Grid.Column>
                   <Grid.Column textAlign="right">
-                    <p className="subtext voting">Voting Shares (15%)</p>
+                    <p className="subtext voting">Voting Shares</p>
                     <p className="amount">200</p>
                   </Grid.Column>
                 </Grid>
@@ -194,7 +269,7 @@ class ProposalDetail extends Component {
                     </span>
                   </Grid.Column>
                 </Grid>
-                <Grid columns={16} >
+                <Grid columns={16} className='member_list' >
                   <Grid.Row>
                     <Grid.Column mobile={16} tablet={16} computer={16} className="pill_column"  >
                       <Grid>
@@ -214,21 +289,21 @@ class ProposalDetail extends Component {
                 </Grid>
                 <Grid>
                   <Grid.Column>
-                    <ProgressBar yes={30} no={18}></ProgressBar>
+                    <ProgressBar yes={this.state.votedYes} no={this.state.votedNo}></ProgressBar>
                   </Grid.Column>
                 </Grid>
-
-                <Grid columns="equal" centered>
-                  <Grid.Column textAlign="center" mobile={16} tablet={5} computer={5} >
-                    <Button className="btn" color='grey' disabled={this.state.userHasVoted} onClick={this.handleNo}>Vote No</Button>
-                  </Grid.Column>
-                  <Grid.Column textAlign="center" mobile={16} tablet={5} computer={5} >
-                    <Button className="btn" color='grey' disabled={this.state.userHasVoted} onClick={this.handleYes}>Vote Yes</Button>
-                  </Grid.Column>
-                  <Grid.Column textAlign="center" mobile={16} tablet={5} computer={5} >
-                    <Button className="btn" color='grey' onClick={this.handleProcess}>Process Proposal</Button>
-                  </Grid.Column>
-                </Grid>
+                {this.state.userShare && this.props.match.params.status === 'inprogress' ?
+                  <Grid columns="equal" centered>
+                    <Grid.Column textAlign="center" mobile={16} tablet={5} computer={5} >
+                      <Button className="btn" color='grey' disabled={this.state.userHasVoted || this.state.isAccepted} onClick={this.handleNo}>Vote No</Button>
+                    </Grid.Column>
+                    <Grid.Column textAlign="center" mobile={16} tablet={5} computer={5} >
+                      <Button className="btn" color='grey' disabled={this.state.userHasVoted || this.state.isAccepted} onClick={this.handleYes}>Vote Yes</Button>
+                    </Grid.Column>
+                    <Grid.Column textAlign="center" mobile={16} tablet={5} computer={5} >
+                      <Button className="btn" color='grey' onClick={this.handleProcess} disabled={(this.state.votedYes > 50 && !this.state.isAccepted) ? false : true}>Process Proposal</Button>
+                    </Grid.Column>
+                  </Grid> : null}
 
               </Grid.Column>
             </Grid>
@@ -255,6 +330,9 @@ function mapDispatchToProps(dispatch) {
     },
     fetchMembers: function () {
       dispatch(fetchMembers());
+    },
+    fetchMemberDetail: function (id) {
+      return dispatch(fetchMemberDetail(id));
     },
     postEvents: function (data) {
       return dispatch(postEvents(data))
