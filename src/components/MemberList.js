@@ -7,11 +7,12 @@ import bull from 'assets/bull.png';
 import hood from 'assets/hood.png';
 
 import { connect } from 'react-redux';
-import { fetchMembers, fetchConfigFounders } from './actions';
+import { fetchMembers, fetchConfigFounders, fetchMemberDetail } from './actions';
 
+const loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
 const user = {
-  "name": "Malcom Jans",
-  "shares": 78
+  "name": (loggedUser ? loggedUser.address: '') ,
+  "shares": (loggedUser ? loggedUser.shares : '')
 };
 // const elders = [
 //   {
@@ -67,7 +68,7 @@ const MemberList = (props) => (
       <Grid.Column textAlign="center">
         <Link to={`/members/${user.name}`} className="uncolored">
           <Image centered src={bull} size='tiny' />
-          <p className="name">{user.name}</p>
+          <p className="name">{!user.name ? '' : (user.name.length > 10 ? user.name.substring(0, 10) + '...' : user.name)}</p>
           <p className="subtext">{user.shares} shares</p>
         </Link>
       </Grid.Column>
@@ -125,6 +126,9 @@ function mapDispatchToProps(dispatch) {
     },
     fetchConfigFounders: function (){
       dispatch(fetchConfigFounders());
+    },
+    fetchMemberDetail: function(id){
+      dispatch(fetchMemberDetail(id))
     }
   };
 }

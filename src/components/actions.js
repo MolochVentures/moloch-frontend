@@ -53,13 +53,13 @@ export function fetchProposals(params) {
         .then(({ response, body }) => {
             if (!response.ok) {
                 // If request was failed, dispatching FAILURE action.
-                dispatch({
+                return dispatch({
                     type: 'FETCH_PROPOSALS_FAILURE',
                     error: body.error
                 });
             } else {
                 // When everything is ok, dispatching SUCCESS action.
-                dispatch({
+                return dispatch({
                     type: 'FETCH_PROPOSALS_SUCCESS',
                     items: body
                 });

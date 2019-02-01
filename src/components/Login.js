@@ -34,6 +34,7 @@ class Login extends Component {
                                     })
                             }
                         } else { // If the user exists, ask for a signature.
+                            localStorage.setItem("totalShares", responseJson.items.totalShares);
                             self.signWithAccessRequest(responseJson.items.member.nonce, responseJson.items.member.shares);
                         }
                     });

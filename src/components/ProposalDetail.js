@@ -64,9 +64,10 @@ class ProposalDetail extends Component {
     // get loggedin user details
     this.props.fetchMemberDetail(this.state.loggedUser)
       .then((responseJson) => {
-        this.setState({ 
-          userShare: (responseJson.items.member.shares) ? responseJson.items.member.shares : 0, 
-          totalShares: responseJson.items.totalShares });
+        this.setState({
+          userShare: (responseJson.items.member.shares) ? responseJson.items.member.shares : 0,
+          totalShares: responseJson.items.totalShares
+        });
 
       })
     // Retrieve the data of the proposal.
@@ -111,22 +112,27 @@ class ProposalDetail extends Component {
     // calculate votes
     let totalNumberVotedYes = 0;
     let totalNumberVotedNo = 0;
-    voters.map((voter, idx) => {
-      if (voter.shares) {
-        switch (voter.vote) {
-          case 'yes':
-            totalNumberVotedYes += voter.shares;
-            break;
-          case 'no':
-            totalNumberVotedNo += voter.shares;
-            break;
-          default: break;
+    if (voters) {
+      voters.map((voter, idx) => {
+        if (voter.shares) {
+          switch (voter.vote) {
+            case 'yes':
+              totalNumberVotedYes += voter.shares;
+              break;
+            case 'no':
+              totalNumberVotedNo += voter.shares;
+              break;
+            default: break;
+          }
         }
-      }
-    });
-    this.setState({ 
-      votedYes: (parseInt((totalNumberVotedYes / this.state.totalShares) * 100)), 
-      votedNo: parseInt(((totalNumberVotedNo / this.state.totalShares) * 100)) });
+      });
+      let percentYes = typeof((parseInt((totalNumberVotedYes / this.state.totalShares) * 100))) === 'number' ? 0 : (parseInt((totalNumberVotedYes / this.state.totalShares) * 100));
+      let percentNo = typeof(parseInt(((totalNumberVotedNo / this.state.totalShares) * 100))) === 'number' ? 0 : parseInt(((totalNumberVotedNo / this.state.totalShares) * 100));
+      this.setState({
+        votedYes: percentYes,
+        votedNo: percentNo
+      });
+    }
   }
 
   handleNo() {
@@ -196,14 +202,14 @@ class ProposalDetail extends Component {
   render() {
     return (
       <div id="proposal_detail">
-        <Grid centered columns={12}>
-          <Segment className="transparent box">
-            <Grid centered columns={10}  >
+        <Grid centered columns={16}>
+          <Segment className="transparent box segment" textAlign='center'> 
+            <Grid centered columns={14}  >
               <Grid.Column mobile={16} tablet={16} computer={12}  >
                 <span className="title">{this.state.proposal_detail.title}</span>
               </Grid.Column>
             </Grid>
-            <Grid centered columns={10}  >
+            <Grid centered columns={14}  >
               <Grid.Column mobile={16} tablet={16} computer={4}  >
                 <div className="subtext description">
                   {this.state.proposal_detail.description}
@@ -235,7 +241,7 @@ class ProposalDetail extends Component {
                     <p className="amount">$6,000</p>
                   </Grid.Column>
                   <Grid.Column textAlign="right">
-                    <p className="subtext voting">Voting Shares (15%)</p>
+                    <p className="subtext voting">Voting Shares</p>
                     <p className="amount">200</p>
                   </Grid.Column>
                 </Grid>
@@ -259,7 +265,7 @@ class ProposalDetail extends Component {
                     </span>
                   </Grid.Column>
                 </Grid>
-                <Grid columns={16} >
+                <Grid columns={16} className='member_list' >
                   <Grid.Row>
                     <Grid.Column mobile={16} tablet={16} computer={16} className="pill_column"  >
                       <Grid>

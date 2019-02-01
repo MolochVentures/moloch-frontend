@@ -102,11 +102,11 @@ class MemberDetail extends React.Component {
                 <Grid columns="equal">
                   <Grid.Column>
                     <p className="subtext">Total USD Value</p>
-                    <p className="amount">{this.props.member_detail.shares}</p>
+                    <p className="amount">$200</p>
                   </Grid.Column>
                   <Grid.Column textAlign="right">
-                    <p className="subtext">Voting Shares (15%)</p>
-                    <p className="amount">3,056,128</p>
+                    <p className="subtext">Voting Share</p>
+                    <p className="amount">{this.props.member_detail.shares ? this.props.member_detail.shares : 0}</p>
                   </Grid.Column>
                 </Grid>
                 <Grid>
@@ -117,13 +117,13 @@ class MemberDetail extends React.Component {
                 <p className="subtext">Token Tribute</p>
                 <Grid columns="equal">
                   <Grid.Row>
-                    {this.props.member_detail.assets.map((token, idx) => (
+                    { this.props.member_detail.assets ? this.props.member_detail.assets.map((token, idx) => (
                       <Grid.Column key={idx}>
                         <Segment className="pill" textAlign="center">
                           <Icon name="ethereum" />{token.amount} {token.asset}
                         </Segment>
                       </Grid.Column>
-                    ))}
+                    )) : null }
                   </Grid.Row>
                   {/* <Grid.Row>
                     {this.props.member_detail.assets.map((token, idx) => (
@@ -151,7 +151,7 @@ class MemberDetail extends React.Component {
                       <p className="subtext">Action</p>
                     </Grid.Column>
                   </Grid.Row>
-                  {this.props.member_detail.proposals.map((p, idx) => (
+                  { this.props.member_detail.proposals ? this.props.member_detail.proposals.map((p, idx) => (
                     <React.Fragment key={idx}>
                       <Grid.Row verticalAlign="middle">
                         <Grid.Column textAlign="left">
@@ -166,13 +166,13 @@ class MemberDetail extends React.Component {
                         <Grid.Column textAlign="right">
                           <Header as="p"
                             color={p.status === "Voted Yes" ? "green" : p.status === "Voted No" ? "red" : null}>
-                            {p.status}
+                            {p.status.charAt(0).toUpperCase() + p.status.slice(1)}
                           </Header>
                         </Grid.Column>
                       </Grid.Row>
                       <Divider />
                     </React.Fragment>
-                  ))}
+                  )) : null }
                 </Grid>
               </Segment>
             </Grid.Column>
