@@ -8,22 +8,22 @@ import { fetchProposalDetail, fetchMembers, postEvents, fetchMemberDetail } from
 
 const ProgressBar = ({ yes, no }) => (
   <>
-  <div style={{ "position": "relative" }}>
-    <Progress percent={yes + no} color="red" size="big" style={{
-      "position": "absolute",
-      "top": "0",
-      "width": "100%"
-    }} />
-    <Progress percent={yes} color="green" size="big" />
-  </div>
-  <Grid columns="equal">
-    <Grid.Column floated="left">
-      {yes}% Yes
+    <div style={{ "position": "relative" }}>
+      <Progress percent={yes + no} color="red" size="big" style={{
+        "position": "absolute",
+        "top": "0",
+        "width": "100%"
+      }} />
+      <Progress percent={yes} color="green" size="big" />
+    </div>
+    <Grid columns="equal">
+      <Grid.Column floated="left">
+        {yes}% Yes
       </Grid.Column>
-    <Grid.Column floated="right" textAlign="right">
-      {no}% No
+      <Grid.Column floated="right" textAlign="right">
+        {no}% No
       </Grid.Column>
-  </Grid>
+    </Grid>
   </>
 );
 
@@ -49,7 +49,8 @@ class ProposalDetail extends Component {
       userShare: 0,
       totalShares: 0,
       votedYes: 0,
-      votedNo: 0
+      votedNo: 0,
+      isAccepted: false
     }
 
     this.handleNo = this.handleNo.bind(this);
@@ -101,9 +102,9 @@ class ProposalDetail extends Component {
   }
 
   loadData(responseJson) {
-    this.setState({ proposal_detail: (responseJson.items.member ? responseJson.items.member : responseJson.items) });
+    this.setState({ proposal_detail: (responseJson.items.member ? responseJson.items.member : responseJson.items), isAccepted : (responseJson.items.status === 'accepted' ? true : false)});
     let voters = this.state.proposal_detail.voters ? this.state.proposal_detail.voters : [];
-    let userHasVoted = voters.find(voter => voter.address === this.state.loggedUser) ? true : false;
+    let userHasVoted = voters.find(voter => voter.member === this.state.loggedUser) ? true : false;
     this.setState({ userHasVoted });
     this.calculateVote(voters);
   }
@@ -126,8 +127,8 @@ class ProposalDetail extends Component {
           }
         }
       });
-      let percentYes = typeof((parseInt((totalNumberVotedYes / this.state.totalShares) * 100))) === 'number' ? 0 : (parseInt((totalNumberVotedYes / this.state.totalShares) * 100));
-      let percentNo = typeof(parseInt(((totalNumberVotedNo / this.state.totalShares) * 100))) === 'number' ? 0 : parseInt(((totalNumberVotedNo / this.state.totalShares) * 100));
+      let percentYes = typeof ((parseInt((totalNumberVotedYes / this.state.totalShares) * 100))) !== 'number' ? 0 : (parseInt((totalNumberVotedYes / this.state.totalShares) * 100));
+      let percentNo = typeof (parseInt(((totalNumberVotedNo / this.state.totalShares) * 100))) !== 'number' ? 0 : parseInt(((totalNumberVotedNo / this.state.totalShares) * 100));
       this.setState({
         votedYes: percentYes,
         votedNo: percentNo
@@ -138,7 +139,7 @@ class ProposalDetail extends Component {
   handleNo() {
     // Add the voter to the voters of the proposal.
     let voters = {
-      address: JSON.parse(localStorage.getItem("loggedUser")).address,
+      member: JSON.parse(localStorage.getItem("loggedUser")).address,
       vote: 'no',
       shares: this.state.userShare
     };
@@ -150,7 +151,7 @@ class ProposalDetail extends Component {
   handleYes() {
     // Add the voter to the voters of the proposal.
     let voters = {
-      address: JSON.parse(localStorage.getItem("loggedUser")).address,
+      member: JSON.parse(localStorage.getItem("loggedUser")).address,
       vote: 'yes',
       shares: this.state.userShare
     };
@@ -166,15 +167,18 @@ class ProposalDetail extends Component {
 
   sendProposalUpdate(eventName, voter) {
     let proposal = this.state.proposal_detail;
+    if (!proposal.voters) {
+      proposal.voters = [];
+    }
     if (voter) {
       proposal.voters.push(voter);
     }
     let self = this;
-    let voters = this.state.proposal_detail.voters ? this.state.proposal_detail.voters : [];
     this.props.postEvents(JSON.stringify({ id: '', name: eventName, payload: proposal }))
       .then((responseJson) => {
         if (responseJson.type === "POST_EVENTS_SUCCESS") {
           self.calculateVote(proposal.voters);
+          self.setState({isAccepted : (responseJson.items.payload.status === 'accepted' ? true : false )});
           switch (eventName) {
             case 'Project proposal voted':
             case 'Membership proposal voted':
@@ -203,7 +207,7 @@ class ProposalDetail extends Component {
     return (
       <div id="proposal_detail">
         <Grid centered columns={16}>
-          <Segment className="transparent box segment" textAlign='center'> 
+          <Segment className="transparent box segment" textAlign='center'>
             <Grid centered columns={14}  >
               <Grid.Column mobile={16} tablet={16} computer={12}  >
                 <span className="title">{this.state.proposal_detail.title}</span>
@@ -288,16 +292,16 @@ class ProposalDetail extends Component {
                     <ProgressBar yes={this.state.votedYes} no={this.state.votedNo}></ProgressBar>
                   </Grid.Column>
                 </Grid>
-                {this.state.userShare ?
+                {this.state.userShare && this.props.match.params.status === 'inprogress' ?
                   <Grid columns="equal" centered>
                     <Grid.Column textAlign="center" mobile={16} tablet={5} computer={5} >
-                      <Button className="btn" color='grey' disabled={this.state.userHasVoted} onClick={this.handleNo}>Vote No</Button>
+                      <Button className="btn" color='grey' disabled={this.state.userHasVoted || this.state.isAccepted} onClick={this.handleNo}>Vote No</Button>
                     </Grid.Column>
                     <Grid.Column textAlign="center" mobile={16} tablet={5} computer={5} >
-                      <Button className="btn" color='grey' disabled={this.state.userHasVoted} onClick={this.handleYes}>Vote Yes</Button>
+                      <Button className="btn" color='grey' disabled={this.state.userHasVoted || this.state.isAccepted} onClick={this.handleYes}>Vote Yes</Button>
                     </Grid.Column>
                     <Grid.Column textAlign="center" mobile={16} tablet={5} computer={5} >
-                      <Button className="btn" color='grey' onClick={this.handleProcess} disabled={(this.state.votedYes > 50) ? false : true}>Process Proposal</Button>
+                      <Button className="btn" color='grey' onClick={this.handleProcess} disabled={(this.state.votedYes > 50 && !this.state.isAccepted) ? false : true}>Process Proposal</Button>
                     </Grid.Column>
                   </Grid> : null}
 

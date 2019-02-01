@@ -75,6 +75,7 @@ body {
     width: 100%;
     z-index: -2;
     background: url("assets/moloch_owl.jpg") 0 / cover fixed;
+    background-repeat: repeat !important;
     filter: blur(12px);
   }
 

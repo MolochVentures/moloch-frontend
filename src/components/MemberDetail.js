@@ -1,5 +1,6 @@
 import React from 'react';
 import { Divider, Grid, Segment, Image, Icon, Label, Header } from 'semantic-ui-react';
+import moment from 'moment';
 
 import bull from 'assets/bull.png';
 
@@ -117,13 +118,14 @@ class MemberDetail extends React.Component {
                 <p className="subtext">Token Tribute</p>
                 <Grid columns="equal">
                   <Grid.Row>
-                    { this.props.member_detail.assets ? this.props.member_detail.assets.map((token, idx) => (
+                    { this.props.member_detail.assets ? this.props.member_detail.assets.map((token, idx) => {
+                      return (
                       <Grid.Column key={idx}>
                         <Segment className="pill" textAlign="center">
                           <Icon name="ethereum" />{token.amount} {token.asset}
                         </Segment>
                       </Grid.Column>
-                    )) : null }
+                    )}) : null }
                   </Grid.Row>
                   {/* <Grid.Row>
                     {this.props.member_detail.assets.map((token, idx) => (
@@ -151,28 +153,29 @@ class MemberDetail extends React.Component {
                       <p className="subtext">Action</p>
                     </Grid.Column>
                   </Grid.Row>
-                  { this.props.member_detail.proposals ? this.props.member_detail.proposals.map((p, idx) => (
+                  { this.props.member_detail.proposals ? this.props.member_detail.proposals.map((p, idx) =>  {
+                    return (
                     <React.Fragment key={idx}>
                       <Grid.Row verticalAlign="middle">
                         <Grid.Column textAlign="left">
-                          {p.status === "Voted Yes" && <Label className="dot" circular color="green" empty />}
-                          {p.status === "Voted No" && <Label className="dot" circular color="red" empty />}
-                          {p.status === "Submitted" && <Label className="dot" circular color="grey" empty />}
+                          {p.vote === "yes" && <Label className="dot" circular color="green" empty />}
+                          {p.vote === "no" && <Label className="dot" circular color="red" empty />}
+                          {/* {p.status === "Submitted" && <Label className="dot" circular color="grey" empty />} */}
                           {p.title}
                         </Grid.Column>
                         <Grid.Column textAlign="center">
-                          <p className="subtext date">{p.period}</p>
+                          <p className="subtext date">{moment(p.date).format('MM/MDD/YYYY')}</p>
                         </Grid.Column>
                         <Grid.Column textAlign="right">
                           <Header as="p"
-                            color={p.status === "Voted Yes" ? "green" : p.status === "Voted No" ? "red" : null}>
-                            {p.status.charAt(0).toUpperCase() + p.status.slice(1)}
+                            color={p.vote === "yes" ? "green" : p.vote === "no" ? "red" : null}>
+                            {p.vote.charAt(0).toUpperCase() + p.vote.slice(1)}
                           </Header>
                         </Grid.Column>
                       </Grid.Row>
                       <Divider />
                     </React.Fragment>
-                  )) : null }
+                  )}) : null }
                 </Grid>
               </Segment>
             </Grid.Column>
